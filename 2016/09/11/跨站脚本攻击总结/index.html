@@ -1,0 +1,812 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="tips," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="XSS攻击原理跨站脚本攻击(XSS)指的是恶意攻击者往web页面插入恶意代码，当用户浏览该页面时，嵌入其中web里面的html代码会被执行，从而达到恶意攻击用户的特殊目的(百度的复制与粘贴)。XSS漏洞一般有两种类型攻击，一类是来自内部的攻击，主要指的是利用WEB程序自身的漏洞，提交特殊的字符串，从而使得跨站页面直接存在于被攻击站点上，这个字符串被称为跨站语句。这一类攻击所利用的漏洞非常类似于SQ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="跨站脚本攻击总结">
+<meta property="og:url" content="http://yoursite.com/2016/09/11/跨站脚本攻击总结/index.html">
+<meta property="og:site_name" content="Watercow's Blog!">
+<meta property="og:description" content="XSS攻击原理跨站脚本攻击(XSS)指的是恶意攻击者往web页面插入恶意代码，当用户浏览该页面时，嵌入其中web里面的html代码会被执行，从而达到恶意攻击用户的特殊目的(百度的复制与粘贴)。XSS漏洞一般有两种类型攻击，一类是来自内部的攻击，主要指的是利用WEB程序自身的漏洞，提交特殊的字符串，从而使得跨站页面直接存在于被攻击站点上，这个字符串被称为跨站语句。这一类攻击所利用的漏洞非常类似于SQ">
+<meta property="og:image" content="http://yoursite.com/images/2016 9 11/1.png">
+<meta property="og:image" content="http://yoursite.com/images/2016 9 11/2.png">
+<meta property="og:image" content="http://yoursite.com/images/2016 9 11/3.png">
+<meta property="og:updated_time" content="2016-09-12T12:13:44.204Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="跨站脚本攻击总结">
+<meta name="twitter:description" content="XSS攻击原理跨站脚本攻击(XSS)指的是恶意攻击者往web页面插入恶意代码，当用户浏览该页面时，嵌入其中web里面的html代码会被执行，从而达到恶意攻击用户的特殊目的(百度的复制与粘贴)。XSS漏洞一般有两种类型攻击，一类是来自内部的攻击，主要指的是利用WEB程序自身的漏洞，提交特殊的字符串，从而使得跨站页面直接存在于被攻击站点上，这个字符串被称为跨站语句。这一类攻击所利用的漏洞非常类似于SQ">
+<meta name="twitter:image" content="http://yoursite.com/images/2016 9 11/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 跨站脚本攻击总结 | Watercow's Blog! </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Watercow's Blog!</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">简单粗暴的博客。</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="#" class="st-search-show-outputs">
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'oRJ2k_HKmkh8Fp72px-r','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                跨站脚本攻击总结
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-11T11:18:34+08:00" content="2016-09-11">
+              2016-09-11
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/09/11/跨站脚本攻击总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/11/跨站脚本攻击总结/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="XSS_u653B_u51FB_u539F_u7406"><a href="#XSS_u653B_u51FB_u539F_u7406" class="headerlink" title="XSS攻击原理"></a>XSS攻击原理</h3><p>跨站脚本攻击(XSS)指的是恶意攻击者往web页面插入恶意代码，当用户浏览该页面时，嵌入其中web里面的html代码会被执行，从而达到恶意攻击用户的特殊目的(百度的复制与粘贴)。<br>XSS漏洞一般有两种类型攻击，一类是来自内部的攻击，主要指的是利用WEB程序自身的漏洞，提交特殊的字符串，从而使得跨站页面直接存在于被攻击站点上，这个字符串被称为跨站语句。这一类攻击所利用的漏洞非常类似于<strong>SQL注入漏洞</strong>，都是WEB程序没有对用户输入作充分的检查和过滤导致的。<br>另一类则是来自外部的攻击，主要指的自己构造XSS跨站漏洞网页或者寻找非目标机以外的有跨站漏洞的网页。如当我们要渗透一个站点，我们自己构造一个跨站网页放在自己的服务器上，然后通过结合其他技术，如<strong>社会工程学</strong>等，欺骗目标服务器的管理员打开。这一类攻击的威胁相对较低。<br><img src="/images/2016 9 11/1.png" width="500px" heigth=""><br><a id="more"></a></p>
+<h3 id="u53CD_u5C04_u578BXSS"><a href="#u53CD_u5C04_u578BXSS" class="headerlink" title="反射型XSS"></a>反射型XSS</h3><p>在XSS攻击方式中需要欺骗用户自己去点击链接才能触发XSS称为反射型XSS。<br>最基本的就是提交表单的网站，输入内容之后点击提交，就POST上传表单。基本的攻击方法就是在表单中输入(下面打星号的如果看懂了，请少看美剧)<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;script&gt;alert(<span class="string">'mo****fu**er'</span>)&lt;<span class="regexp">/script&gt;</span></div></pre></td></tr></table></figure></p>
+<p>如果该网站没有任何防护措施的话(其实这种XSS基本不可能搞出大新闻)，浏览器就会弹出一个对话框，显示”<strong>mo<strong>**fu</strong>cer</strong>“。</p>
+<h3 id="u5B58_u50A8_u578BXSS"><a href="#u5B58_u50A8_u578BXSS" class="headerlink" title="存储型XSS"></a>存储型XSS</h3><p>由于对用户的输入过滤不严导致XSS，所以一般XSS会存在在交互页面，比如<strong>留言板、登录框等</strong>。<br>假若发现留言标题文本框对输入的文字长度进行了限制，所以就要调整XSS代码来绕过防护。<br><strong>1.</strong>使用注释的方式绕过代码对长度的限制，如<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">*<span class="regexp">/&lt;/</span>script&gt;</div></pre></td></tr></table></figure></p>
+<p>假若提交成功后，再次提交内容<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;\script\&gt;alert(<span class="regexp">/xss/</span>)/\*</div></pre></td></tr></table></figure></p>
+<p>来配合上一段代码执行,这种通过注释符绕过的成功的可能性远远大于了直接XSS代码。</p>
+<h3 id="u6BD4_u8F83_u5E38_u7528_u7684XSS_u8BED_u53E5"><a href="#u6BD4_u8F83_u5E38_u7528_u7684XSS_u8BED_u53E5" class="headerlink" title="比较常用的XSS语句"></a>比较常用的XSS语句</h3><p><strong>1.</strong>对于没有任何过滤处理的，直接<strong><script>alert(“xss”)</script></strong><br><strong>2.</strong>有些会做过滤替换，例如有的过滤规则如下<br><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">	<span class="meta">&lt;?php</span></div><div class="line">	$name = $_GET[<span class="string">"name"</span>];</div><div class="line">	$name = preg_replace(<span class="string">"/&lt;\script&gt;/"</span>,<span class="string">""</span>,$name);</div><div class="line">	$name = preg_replace(<span class="string">"/&lt;\/script&gt;/"</span>,<span class="string">""</span>,$name);</div><div class="line">	<span class="meta">?&gt;</span></div><div class="line">``` </div><div class="line"></div><div class="line">代码过滤了小写的&lt;script&gt;和&lt;/script&gt;，所以可以使用大小写绕过,.php?name=__&lt;scripT&gt;alert(<span class="string">"xss"</span>)&lt;/scripT&gt;__即可</div><div class="line">__3.__更进一步的过滤</div><div class="line">``` php</div><div class="line">	<span class="meta">&lt;?php</span></div><div class="line">	$name = $_GET[<span class="string">"name"</span>];</div><div class="line">	$name = preg_replace(<span class="string">"/&lt;\script&gt;/i"</span>,<span class="string">""</span>,$name);</div><div class="line">	$name = preg_replace(<span class="string">"/&lt;\/script&gt;/i"</span>,<span class="string">""</span>,$name);</div><div class="line">	<span class="meta">?&gt;</span></div><div class="line">``` </div><div class="line"></div><div class="line">过滤了不区分大小写的&lt;script&gt;与&lt;/script&gt;，可以使用嵌套的script标签绕过，XSS绕过语句为.php?name=__&lt;scr&lt;script&gt;ipt&gt;alert(<span class="string">"xss"</span>)&lt;/scr&lt;script&gt;ipt&gt;__即可</div><div class="line">__4.__一类过滤可以利用使img scr调用图片失败然后执行后面的动作，关键php处理代码如下</div><div class="line">``` php</div><div class="line">	<span class="meta">&lt;?php</span></div><div class="line">	<span class="keyword">if</span>(preg_match(<span class="string">'/script/i'</span>,$_GET[<span class="string">'name'</span>]))&#123;</div><div class="line">		<span class="keyword">die</span>(<span class="string">"error"</span>);</div><div class="line">    &#125;</div><div class="line">	<span class="meta">?&gt;</span></div></pre></td></tr></table></figure></p>
+<p>代码中可以看出，包含script的字符串即报错，可以使用<strong>img</strong>标签绕过，XSS语句为.php?name=<strong>&lt;\img src=””onerror=”alert(‘xss’)”&gt;</strong>。<br><strong>5.</strong>另一类php过滤代码如下<br><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line"><span class="keyword">if</span>(preg_match(<span class="string">'/alert/i'</span>,$_GET[<span class="string">"name"</span>]))&#123;</div><div class="line">	<span class="keyword">die</span>(<span class="string">"error"</span>);</div><div class="line">&#125;</div><div class="line"><span class="meta">?&gt;</span></div></pre></td></tr></table></figure></p>
+<p>包含alert字符串即报错，我们可以使用编码方式绕过 .php?name=<strong><scrpit>eval(String.fromCharCode(97, 108, 101, 114, 116, 40, 39, 120, 115, 115, 39, 41))</scrpit></strong>,这样就可以弹出。<br><strong>6.</strong>再看一类php过滤代码<br><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line">&lt;script&gt;</div><div class="line">	<span class="keyword">var</span> $a = <span class="string">"&lt;?php echo $_GET["</span>name<span class="string">"]; ?&gt;"</span>;</div><div class="line">&lt;/script&gt;</div><div class="line"><span class="meta">?&gt;</span></div></pre></td></tr></table></figure></p>
+<p>从代码中可以得出直接在js环境中输出php变量，可以通过构造js脚本绕过，我们构造语句.php?name=<strong>&lt;防注释/script&gt;&lt;防注释script&gt;alert(‘xss’)&lt;防注释/script&gt;</strong>，即可弹出窗口。</p>
+<h3 id="u66F4_u9AD8_u7EA7_u4E00_u70B9_u7684XSS_u8BED_u53E5"><a href="#u66F4_u9AD8_u7EA7_u4E00_u70B9_u7684XSS_u8BED_u53E5" class="headerlink" title="更高级一点的XSS语句"></a>更高级一点的XSS语句</h3><p><strong>1.</strong>先看一部分php过滤的关键代码<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;script&gt;</div><div class="line">	<span class="keyword">var</span> $a= <span class="string">'&lt;?php echo htmlentities($_GET["name"]); ?&gt;'</span>;</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure></p>
+<p>这段代码在js环境中输出通过html编码的php变量，htmlentities没有过滤单引号，可以使用单引号绕过，构造语句如下<strong>.php?name=’;alert(‘xss’)’</strong>，可实现弹窗效果。</p>
+<p><strong>2.</strong>另一类，迷惑点在输入用户名的地方，当我们要测试提交一个地址的时候源码会显示出来一个链接，链接就是你输入的链接，关键代码如下：<br><img src="/images/2016 9 11/2.png" width="500px" heigth=""><br>可以看到，post地址使用了当前url,可以通过构造当前url地址达到xss的目的，构造代码如下：<strong>.php/[/url]”&gt;&lt;防注释script&gt;&lt;防注释/script&gt;”&lt;</strong>即可实现XSS。</p>
+<p><strong>3.</strong>last but 不知道是不是 least，先看代码为敬：<br><img src="/images/2016 9 11/3.png" width="500px" heigth=""><br>xss直接在页面输出锚点id，构建一个带xss的锚点即可，构造的代码如下：__.php#&lt;防注释script&gt;alert(‘xss’)&lt;防注释/script&gt;，可实现弹窗。</p>
+<h3 id="u5B9E_u6218_u4E2D_u7684CSRF"><a href="#u5B9E_u6218_u4E2D_u7684CSRF" class="headerlink" title="实战中的CSRF"></a>实战中的CSRF</h3><p>CSRF(Cross-Site Request Forgery,跨站点伪造请求)是一种网络攻击方式，该攻击可以在受害者毫不知情的情况下以受害者名义伪造请求发送给受攻击站点，从而在未授权的情况下执行在权限保护之下的操作，具有很大的危害性。具体来讲，可以这样理解CSRF攻击：攻击者盗用了你的身份，以你的名义发送恶意请求，对服务器来说这个请求是完全合法的，但是却完成了攻击者所期望的一个操作，比如以你的名义发送邮件、发消息、盗取你的账号，添加系统管理员等等。(百度的复制与粘贴)</p>
+<h3 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h3><p>由于是我自己总结，所以肯定会有包含不到的地方，希望不足大家留言指正，//反正我也不会看。。。</p>
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/tips/" rel="tag">#tips</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/04/9月i春秋周赛web篇writeup/" rel="next" title="9月i春秋周赛web篇writeup">
+                <i class="fa fa-chevron-left"></i> 9月i春秋周赛web篇writeup
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/09/13/SQL注入总结-垃圾总结，大神勿喷/" rel="prev" title="SQL注入总结(垃圾总结，大神勿喷)">
+                SQL注入总结(垃圾总结，大神勿喷) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/09/11/跨站脚本攻击总结/"
+           data-title="跨站脚本攻击总结" data-url="http://yoursite.com/2016/09/11/跨站脚本攻击总结/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/author.png"
+               alt="watercow" />
+          <p class="site-author-name" itemprop="name">watercow</p>
+          <p class="site-description motion-element" itemprop="description">手中两把锟斤拷，口中疾呼烫烫烫。</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+          
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/watercow" target="_blank">
+                  
+                    <i class="fa fa-globe"></i> zhihu
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/watercow" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#XSS_u653B_u51FB_u539F_u7406"><span class="nav-number">1.</span> <span class="nav-text">XSS攻击原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u53CD_u5C04_u578BXSS"><span class="nav-number">2.</span> <span class="nav-text">反射型XSS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u5B58_u50A8_u578BXSS"><span class="nav-number">3.</span> <span class="nav-text">存储型XSS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u6BD4_u8F83_u5E38_u7528_u7684XSS_u8BED_u53E5"><span class="nav-number">4.</span> <span class="nav-text">比较常用的XSS语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u66F4_u9AD8_u7EA7_u4E00_u70B9_u7684XSS_u8BED_u53E5"><span class="nav-number">5.</span> <span class="nav-text">更高级一点的XSS语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u5B9E_u6218_u4E2D_u7684CSRF"><span class="nav-number">6.</span> <span class="nav-text">实战中的CSRF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u603B_u7ED3"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">watercow</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  
+
+
+  
+
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=0.5.0"></script>
+
+
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"watercow2"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+
+  
+    <script type="text/javascript" src="http://cdn.staticfile.org/mathjax/2.4.0/MathJax.js"></script>
+    <script type="text/javascript" src="http://cdn.staticfile.org/mathjax/2.4.0/config/TeX-AMS-MML_HTMLorMML.js"></script>
+  
+
+
+  
+  
+
+
+</body>
+</html>

