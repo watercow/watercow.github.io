@@ -341,11 +341,14 @@
 
       
         
-          
-            <h3 id="Web_Login_2850_29"><a href="#Web_Login_2850_29" class="headerlink" title="Web_Login(50)"></a>Web_Login(50)</h3><p>点开连接是个登陆界面，有Username和Password，随便瞎蒙admin，显示error。<br><img src="/images/2016 11 21/1.png" width="" heigth=""><br>扫描后台没有可视文件，sqlmap没有扫出注入点，<strong>F12</strong>查看源码，发现了登陆的用户名密码<br><img src="/images/2016 11 21/2.png" width="" heigth=""><br>登陆后跳至/member.php页面，发现是张嘲讽脸。。。<br><img src="/images/2016 11 21/3.png" width="" heigth=""><br>用<strong>burpsuit</strong>查看信息，发现response报文中有个<strong>show</strong>字段，其值为零。<br><img src="/images/2016 11 21/4.png" width="" heigth=""><br>虽然从没有听说过报文头中有这个字段，大胆将其添加值Request请求头中，结果返回了member.php的php代码<br><img src="/images/2016 11 21/5.png" width="" heigth=""><br>从代码中可以看到，首先从GET POST SESSION COOKIE数组合并并赋值给requset参数，<br><strong>Request[token]</strong>做三个解码操作，最后判断login[user]等于ichunqiu则输出flag。<br>所以本地写一个反编码的Php代码，原来是base64_decode再gzuncompress之后再unserialize，现在反着来，代码如下<br><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">	<span class="meta">&lt;?php</span></div><div class="line">	$arr = <span class="keyword">array</span>(<span class="string">'user'</span>=&gt;<span class="string">'ichunqiu'</span>);</div><div class="line">	$a = base64_encode(gzcompress(serialize($arr)));</div><div class="line">	$login = unserialize(gzuncompress(base64_decode($a));</div><div class="line">	<span class="keyword">echo</span> $a;</div><div class="line"><span class="meta">?&gt;</span></div></pre></td></tr></table></figure></p>
-<p>运行结果如下：<br><img src="/images/2016 11 21/6.png" width="" heigth=""><br>将其作为token值添加到Cookie中，Reapter提交返回了flag<br><img src="/images/2016 11 21/7.png" width="" heigth=""></p>
-
-          
+          <h3 id="1-Web_Login_2850_29"><a href="#1-Web_Login_2850_29" class="headerlink" title="1.Web_Login(50)"></a>1.Web_Login(50)</h3><p>点开连接是个登陆界面，有Username和Password，随便瞎蒙admin，显示error。<br><img src="/images/2016 11 21/1.png" width="" heigth=""><br>
+          <!--noindex-->
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/11/21/百度杯CTF十月篇/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1019,7 +1022,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Web,tips," />
+  <meta name="keywords" content="tips,Web,python,Apache," />
 
 
 
@@ -84,12 +84,12 @@
 
 
 
-<meta name="description" content="Web_Login(50)点开连接是个登陆界面，有Username和Password，随便瞎蒙admin，显示error。扫描后台没有可视文件，sqlmap没有扫出注入点，F12查看源码，发现了登陆的用户名密码登陆后跳至/member.php页面，发现是张嘲讽脸。。。用burpsuit查看信息，发现response报文中有个show字段，其值为零。虽然从没有听说过报文头中有这个字段，大胆将其添加值">
+<meta name="description" content="1.Web_Login(50)点开连接是个登陆界面，有Username和Password，随便瞎蒙admin，显示error。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="百度杯CTF十月篇">
 <meta property="og:url" content="http://yoursite.com/2016/11/21/百度杯CTF十月篇/index.html">
 <meta property="og:site_name" content="Watercow's Blog!">
-<meta property="og:description" content="Web_Login(50)点开连接是个登陆界面，有Username和Password，随便瞎蒙admin，显示error。扫描后台没有可视文件，sqlmap没有扫出注入点，F12查看源码，发现了登陆的用户名密码登陆后跳至/member.php页面，发现是张嘲讽脸。。。用burpsuit查看信息，发现response报文中有个show字段，其值为零。虽然从没有听说过报文头中有这个字段，大胆将其添加值">
+<meta property="og:description" content="1.Web_Login(50)点开连接是个登陆界面，有Username和Password，随便瞎蒙admin，显示error。">
 <meta property="og:image" content="http://yoursite.com/images/2016 11 21/1.png">
 <meta property="og:image" content="http://yoursite.com/images/2016 11 21/2.png">
 <meta property="og:image" content="http://yoursite.com/images/2016 11 21/3.png">
@@ -97,10 +97,20 @@
 <meta property="og:image" content="http://yoursite.com/images/2016 11 21/5.png">
 <meta property="og:image" content="http://yoursite.com/images/2016 11 21/6.png">
 <meta property="og:image" content="http://yoursite.com/images/2016 11 21/7.png">
-<meta property="og:updated_time" content="2016-11-21T12:06:28.370Z">
+<meta property="og:image" content="http://yoursite.com/images/2016 11 21/8.png">
+<meta property="og:image" content="http://yoursite.com/images/2016 11 21/9.png">
+<meta property="og:image" content="http://yoursite.com/images/2016 11 21/10.png">
+<meta property="og:image" content="http://yoursite.com/images/2016 11 21/11.png">
+<meta property="og:image" content="http://yoursite.com/images/2016 11 21/12.png">
+<meta property="og:image" content="http://yoursite.com/images/2016 11 21/13.png">
+<meta property="og:image" content="http://yoursite.com/images/2016 11 21/14.png">
+<meta property="og:image" content="http://yoursite.com/images/2016 11 21/15.png">
+<meta property="og:image" content="http://yoursite.com/images/2016 11 21/16.png">
+<meta property="og:image" content="http://yoursite.com/images/2016 11 21/17.png">
+<meta property="og:updated_time" content="2016-11-24T11:02:58.687Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="百度杯CTF十月篇">
-<meta name="twitter:description" content="Web_Login(50)点开连接是个登陆界面，有Username和Password，随便瞎蒙admin，显示error。扫描后台没有可视文件，sqlmap没有扫出注入点，F12查看源码，发现了登陆的用户名密码登陆后跳至/member.php页面，发现是张嘲讽脸。。。用burpsuit查看信息，发现response报文中有个show字段，其值为零。虽然从没有听说过报文头中有这个字段，大胆将其添加值">
+<meta name="twitter:description" content="1.Web_Login(50)点开连接是个登陆界面，有Username和Password，随便瞎蒙admin，显示error。">
 <meta name="twitter:image" content="http://yoursite.com/images/2016 11 21/1.png">
 
 
@@ -344,8 +354,10 @@
       
 
       
-        <h3 id="Web_Login_2850_29"><a href="#Web_Login_2850_29" class="headerlink" title="Web_Login(50)"></a>Web_Login(50)</h3><p>点开连接是个登陆界面，有Username和Password，随便瞎蒙admin，显示error。<br><img src="/images/2016 11 21/1.png" width="" heigth=""><br>扫描后台没有可视文件，sqlmap没有扫出注入点，<strong>F12</strong>查看源码，发现了登陆的用户名密码<br><img src="/images/2016 11 21/2.png" width="" heigth=""><br>登陆后跳至/member.php页面，发现是张嘲讽脸。。。<br><img src="/images/2016 11 21/3.png" width="" heigth=""><br>用<strong>burpsuit</strong>查看信息，发现response报文中有个<strong>show</strong>字段，其值为零。<br><img src="/images/2016 11 21/4.png" width="" heigth=""><br>虽然从没有听说过报文头中有这个字段，大胆将其添加值Request请求头中，结果返回了member.php的php代码<br><img src="/images/2016 11 21/5.png" width="" heigth=""><br>从代码中可以看到，首先从GET POST SESSION COOKIE数组合并并赋值给requset参数，<br><strong>Request[token]</strong>做三个解码操作，最后判断login[user]等于ichunqiu则输出flag。<br>所以本地写一个反编码的Php代码，原来是base64_decode再gzuncompress之后再unserialize，现在反着来，代码如下<br><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">	<span class="meta">&lt;?php</span></div><div class="line">	$arr = <span class="keyword">array</span>(<span class="string">'user'</span>=&gt;<span class="string">'ichunqiu'</span>);</div><div class="line">	$a = base64_encode(gzcompress(serialize($arr)));</div><div class="line">	$login = unserialize(gzuncompress(base64_decode($a));</div><div class="line">	<span class="keyword">echo</span> $a;</div><div class="line"><span class="meta">?&gt;</span></div></pre></td></tr></table></figure></p>
+        <h3 id="1-Web_Login_2850_29"><a href="#1-Web_Login_2850_29" class="headerlink" title="1.Web_Login(50)"></a>1.Web_Login(50)</h3><p>点开连接是个登陆界面，有Username和Password，随便瞎蒙admin，显示error。<br><img src="/images/2016 11 21/1.png" width="" heigth=""><br><a id="more"></a><br>扫描后台没有可视文件，sqlmap没有扫出注入点，<strong>F12</strong>查看源码，发现了登陆的用户名密码<br><img src="/images/2016 11 21/2.png" width="" heigth=""><br>登陆后跳至/member.php页面，发现是张嘲讽脸。。。<br><img src="/images/2016 11 21/3.png" width="" heigth=""><br>用<strong>burpsuit</strong>查看信息，发现response报文中有个<strong>show</strong>字段，其值为零。<br><img src="/images/2016 11 21/4.png" width="" heigth=""><br>虽然从没有听说过报文头中有这个字段，大胆将其添加值Request请求头中，结果返回了member.php的php代码<br><img src="/images/2016 11 21/5.png" width="" heigth=""><br>从代码中可以看到，首先从GET POST SESSION COOKIE数组合并并赋值给requset参数，<br><strong>Request[token]</strong>做三个解码操作，最后判断login[user]等于ichunqiu则输出flag。<br>所以本地写一个反编码的Php代码，原来是base64_decode再gzuncompress之后再unserialize，现在反着来，代码如下<br><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">	<span class="meta">&lt;?php</span></div><div class="line">	$arr = <span class="keyword">array</span>(<span class="string">'user'</span>=&gt;<span class="string">'ichunqiu'</span>);</div><div class="line">	$a = base64_encode(gzcompress(serialize($arr)));</div><div class="line">	$login = unserialize(gzuncompress(base64_decode($a));</div><div class="line">	<span class="keyword">echo</span> $a;</div><div class="line"><span class="meta">?&gt;</span></div></pre></td></tr></table></figure></p>
 <p>运行结果如下：<br><img src="/images/2016 11 21/6.png" width="" heigth=""><br>将其作为token值添加到Cookie中，Reapter提交返回了flag<br><img src="/images/2016 11 21/7.png" width="" heigth=""></p>
+<h3 id="2-GetFlag_2850_29"><a href="#2-GetFlag_2850_29" class="headerlink" title="2.GetFlag(50)"></a>2.GetFlag(50)</h3><p>点开连接，还是一个用户登陆的界面，不同的是加上了Captcha验证码，验证码给出了计算的依据：<strong>substr(md5(captcha),0,6)=1b9c25</strong>，第一印象就是爆破呗，猜测captcha是数字，写出了个爆破脚本:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> hashlib</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">md5</span><span class="params">(str)</span>:</span></div><div class="line">	m = hashlib.md5()</div><div class="line">	m.update(str)</div><div class="line">	<span class="keyword">return</span> m.hexdigest()</div><div class="line"></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">9999999</span>):</div><div class="line">	a = md5(str(i))</div><div class="line">	<span class="keyword">if</span>(a[<span class="number">0</span>:<span class="number">6</span>]== <span class="string">'1b9c25'</span>):</div><div class="line">		<span class="keyword">print</span> <span class="string">'find the key: '</span>+ str(i)</div><div class="line">		<span class="keyword">break</span></div></pre></td></tr></table></figure></p>
+<p>有时可能爆破不出结果，刷新验证码重新来，总能找到可以的，运行结果为：<br><img src="/images/2016 11 21/8.png" width="" heigth=""><br>然后将验证码填写为脚本运行出的结果，用户名就用万能密码<strong>username:admin ‘or 1=1 or ‘1’=’1</strong> &amp; <strong>password:admin</strong><br><img src="/images/2016 11 21/9.png" width="" heigth=""><br>然后发现，竟然登陆成功了。。。<br>巴特，好哎VER，给了三个可以下载的文件<br><img src="/images/2016 11 21/10.png" width="" heigth=""><br>下载后查看，感觉我TM好像被耍了。。。<br><img src="/images/2016 11 21/11.png" width="" heigth=""><br><img src="/images/2016 11 21/12.png" width="" heigth=""><br>还好有一个给了提示信息：<br><img src="/images/2016 11 21/13.png" width="" heigth=""><br>提示写到flag在web目录的根目录下，所以，尝试使用burpsuit抓包分析。<br><img src="/images/2016 11 21/14.png" width="" heigth=""><br>抓到的数据包的响应报文看出，服务器是Apache，文件的大致目录结构，要是在Apache服务器的根目录，路径应该是<strong>var/www/html/….</strong><br>所以更改请求报文的<strong>URI</strong>，通过../../的方式返回至顶层目录，发现结果不正确，猜测可能../被php给做了过滤处理了<br><img src="/images/2016 11 21/15.png" width="" heigth=""><br>大胆处理，既然是Apache服务器又是根目录，直接给绝对路径地址来构造请求报文，结果返回了flag.php的代码<br><img src="/images/2016 11 21/16.png" width="" heigth=""><br>代码的意思很简单，就是提取POST提交的flag关键字内容，然后做一些过滤后比较是否等于“flag”,相等就输出flag。<br>直接构造POST请求，如下图，得到了flag(view-source表示直接查看源码)<br><img src="/images/2016 11 21/17.png" width="" heigth=""></p>
 
       
     </div>
@@ -369,9 +381,13 @@
       
         <div class="post-tags">
           
+            <a href="/tags/tips/" rel="tag"># tips</a>
+          
             <a href="/tags/Web/" rel="tag"># Web</a>
           
-            <a href="/tags/tips/" rel="tag"># tips</a>
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/Apache/" rel="tag"># Apache</a>
           
         </div>
       
@@ -477,7 +493,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -512,7 +528,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Web_Login_2850_29"><span class="nav-number">1.</span> <span class="nav-text">Web_Login(50)</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Web_Login_2850_29"><span class="nav-number">1.</span> <span class="nav-text">1.Web_Login(50)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-GetFlag_2850_29"><span class="nav-number">2.</span> <span class="nav-text">2.GetFlag(50)</span></a></li></ol></div>
             
 
           </div>
