@@ -239,6 +239,164 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/12/关于栈溢出的总结/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="watercow">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/author.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Watercow's Blog!">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Watercow's Blog!" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/03/12/关于栈溢出的总结/" itemprop="url">
+                  关于栈溢出的总结
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-12T16:57:27+08:00">
+                2017-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/PWN/" itemprop="url" rel="index">
+                    <span itemprop="name">PWN</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2017/03/12/关于栈溢出的总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/12/关于栈溢出的总结/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="u4E00_u4E9B_u8BF4_u660E"><a href="#u4E00_u4E9B_u8BF4_u660E" class="headerlink" title="一些说明"></a>一些说明</h3><p>本次总结来自与蓝莲花战队冠成爸爸的《栈溢出-这些都是套路》</p>
+<h3 id="u57FA_u7840_u77E5_u8BC6"><a href="#u57FA_u7840_u77E5_u8BC6" class="headerlink" title="基础知识"></a>基础知识</h3><h4 id="u5BC4_u5B58_u5668"><a href="#u5BC4_u5B58_u5668" class="headerlink" title="寄存器"></a>寄存器</h4><p>rsp/esp —— 栈顶寄存器<br>rbp/ebp —— 栈底寄存器<br>rax/eax —— 作为函数返回值使用<br>rdi,rsi,rdx,rcx —— 作为函数参数(依次对应第1参数、第2参数…)<br><img src="/images/2017 3 12/cache1.png" width="" heigth=""><br>
+          <!--noindex-->
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2017/03/12/关于栈溢出的总结/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
   <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/21/百度杯CTF十月篇/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -777,158 +935,11 @@
 
       
         
-          <h3 id="1-Upload"><a href="#1-Upload" class="headerlink" title="1.Upload"></a>1.Upload</h3><p>题目:想怎么传就怎么传，就是这么任性。<br>hint:flag在flag.php里<br>根据题目理解，对上传的文件类型没有限制，题目界面就是一个上传文件的form表<br><img src="/images/2016 9 4/1.png" width="200px" heigth=""><br>试着上传<strong>.jpg</strong>格式的图片，显示上传成功，并返回了存放该图片的<strong>地址信息</strong><br><img src="/images/2016 9 4/2.png" width="500px" heigth=""><br>思路就非常清晰了，就是要通过上传的文件来弹出flag，<br>因为对上传的文件没有类型限制，所以可以直接上传<strong>.php</strong>文件，通过一句话木马进行调用system函数，<strong>.php</strong>文件内容如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;script language=<span class="string">"php"</span>&gt;</div><div class="line">system(<span class="string">'cat ../flag.*'</span>);</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure></p>
+          <h3 id="1-Upload"><a href="#1-Upload" class="headerlink" title="1.Upload"></a>1.Upload</h3><p>题目:想怎么传就怎么传，就是这么任性。<br>hint:flag在flag.php里<br>根据题目理解，对上传的文件类型没有限制，题目界面就是一个上传文件的form表<br><img src="/images/2016 9 4/1.png" width="200px" heigth=""><br>试着上传<strong>.jpg</strong>格式的图片，显示上传成功，并返回了存放该图片的<strong>地址信息</strong><br><img src="/images/2016 9 4/2.png" width="500px" heigth=""><br>思路就非常清晰了，就是要通过上传的文件来弹出flag，<br>因为对上传的文件没有类型限制，所以可以直接上传<strong>.php</strong>文件，通过一句话木马进行调用system函数，<strong>.php</strong>文件内容如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;script language=<span class="string">"php"</span>&gt;</div><div class="line">system(<span class="string">'cat ../flag.*'</span>);</div><div class="line"><span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></div></pre></td></tr></table></figure></p>
 <p>至于<strong>cat</strong>后要接“..”,是因为从第一次返回的路径来看是保存在<strong>/u/</strong>的目录下，所以要先跳转回/u/。<br>但是上传却没有任何信息弹出，开始懵逼。。。<br>
           <!--noindex-->
           <div class="post-more-link text-center">
             <a class="btn" href="/2016/09/04/9月i春秋周赛web篇writeup/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/25/记一道pwn题详解/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="watercow">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/images/author.png">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="Watercow's Blog!">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="Watercow's Blog!" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/08/25/记一道pwn题详解/" itemprop="url">
-                  记一道pwn题详解
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-08-25T22:16:58+08:00">
-                2016-08-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CTF/" itemprop="url" rel="index">
-                    <span itemprop="name">CTF</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <a href="/2016/08/25/记一道pwn题详解/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/25/记一道pwn题详解/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="u524D_u8A00"><a href="#u524D_u8A00" class="headerlink" title="前言"></a>前言</h3><p>Xman交流赛里的whoami的pwn题，这道漏洞利用让我受益很多,也感谢SU战队的pwn手司师傅的解答，记录一下解题过程。</p>
-<h3 id="u5173_u952E_u70B9"><a href="#u5173_u952E_u70B9" class="headerlink" title="关键点"></a>关键点</h3><p>通过栈溢出提权，进入system调用的/bin/sh，调用方法是通过<strong>int 0x80</strong>中断，系统调用号在/usr/include/x86_64-linux-gnu/asm/unistd_32.h<br>11号execve。需要传入的参数为<br><strong>EAX = 0xb</strong>(就是11)<br><strong>EBX = 执行指令的地址</strong><br><strong>ECX = EBX中指令地址的地址 + 该指令需要的参数(没有按0x0输入)</strong><br><strong>EDX = 传递的环境等选项(一般为0)</strong><br>总结自博客 <a href="http://hackoftheday.securitytube.net/2013/04/demystifying-execve-shellcode-stack.html">int 80中断</a><br>
-          <!--noindex-->
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/08/25/记一道pwn题详解/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1005,7 +1016,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-count">10</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1013,7 +1024,7 @@
           
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">分类</span>
               
             </div>
@@ -1062,7 +1073,7 @@
         <div class="copyright" >
   
   &copy;  2015 - 
-  <span itemprop="copyrightYear">2016</span>
+  <span itemprop="copyrightYear">2017</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

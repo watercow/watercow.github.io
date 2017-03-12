@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="photo," />
+  <meta name="keywords" content="tips,PWN," />
 
 
 
@@ -84,15 +84,23 @@
 
 
 
+<meta name="description" content="一些说明本次总结来自与蓝莲花战队冠成爸爸的《栈溢出-这些都是套路》
+基础知识寄存器rsp/esp —— 栈顶寄存器rbp/ebp —— 栈底寄存器rax/eax —— 作为函数返回值使用rdi,rsi,rdx,rcx —— 作为函数参数(依次对应第1参数、第2参数…)">
 <meta property="og:type" content="article">
-<meta property="og:title" content="匹克切(新海诚)">
-<meta property="og:url" content="http://yoursite.com/2016/02/29/匹克切(新海诚)/index.html">
+<meta property="og:title" content="关于栈溢出的总结">
+<meta property="og:url" content="http://yoursite.com/2017/03/12/关于栈溢出的总结/index.html">
 <meta property="og:site_name" content="Watercow's Blog!">
-<meta property="og:image" content="http://yoursite.com/images/2016 2 29/jietu01.png">
-<meta property="og:updated_time" content="2016-08-02T11:02:41.425Z">
+<meta property="og:description" content="一些说明本次总结来自与蓝莲花战队冠成爸爸的《栈溢出-这些都是套路》
+基础知识寄存器rsp/esp —— 栈顶寄存器rbp/ebp —— 栈底寄存器rax/eax —— 作为函数返回值使用rdi,rsi,rdx,rcx —— 作为函数参数(依次对应第1参数、第2参数…)">
+<meta property="og:image" content="http://yoursite.com/images/2017 3 12/cache1.png">
+<meta property="og:image" content="http://yoursite.com/images/2017 3 12/zhan.png">
+<meta property="og:image" content="http://yoursite.com/images/2017 3 12/func.png">
+<meta property="og:updated_time" content="2017-03-12T12:07:47.677Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="匹克切(新海诚)">
-<meta name="twitter:image" content="http://yoursite.com/images/2016 2 29/jietu01.png">
+<meta name="twitter:title" content="关于栈溢出的总结">
+<meta name="twitter:description" content="一些说明本次总结来自与蓝莲花战队冠成爸爸的《栈溢出-这些都是套路》
+基础知识寄存器rsp/esp —— 栈顶寄存器rbp/ebp —— 栈底寄存器rax/eax —— 作为函数返回值使用rdi,rsi,rdx,rcx —— 作为函数参数(依次对应第1参数、第2参数…)">
+<meta name="twitter:image" content="http://yoursite.com/images/2017 3 12/cache1.png">
 
 
 
@@ -120,13 +128,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/02/29/匹克切(新海诚)/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/03/12/关于栈溢出的总结/"/>
 
 
 
 
 
-  <title> 匹克切(新海诚) | Watercow's Blog! </title>
+  <title> 关于栈溢出的总结 | Watercow's Blog! </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -237,7 +245,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/02/29/匹克切(新海诚)/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/12/关于栈溢出的总结/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="watercow">
@@ -261,7 +269,7 @@
             
             
               
-                匹克切(新海诚)
+                关于栈溢出的总结
               
             
           </h1>
@@ -274,8 +282,8 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-02-29T09:26:46+08:00">
-                2016-02-29
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-12T16:57:27+08:00">
+                2017-03-12
               </time>
             
 
@@ -293,8 +301,19 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Life/" itemprop="url" rel="index">
-                    <span itemprop="name">Life</span>
+                  <a href="/categories/CTF/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/PWN/" itemprop="url" rel="index">
+                    <span itemprop="name">PWN</span>
                   </a>
                 </span>
 
@@ -308,8 +327,8 @@
             
               <span class="post-comments-count">
                 <span class="post-meta-divider">|</span>
-                <a href="/2016/02/29/匹克切(新海诚)/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/02/29/匹克切(新海诚)/" itemprop="commentCount"></span>
+                <a href="/2017/03/12/关于栈溢出的总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/12/关于栈溢出的总结/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -335,7 +354,13 @@
       
 
       
-        <div class="group-picture"><div class="group-picture-container"><div class="group-picture-row"><div class="group-picture-column" style="width: 100%;"><img src="/images/2016 2 29/jietu01.png" alt=""></div></div><div class="group-picture-row"></div></div></div>
+        <h3 id="u4E00_u4E9B_u8BF4_u660E"><a href="#u4E00_u4E9B_u8BF4_u660E" class="headerlink" title="一些说明"></a>一些说明</h3><p>本次总结来自与蓝莲花战队冠成爸爸的《栈溢出-这些都是套路》</p>
+<h3 id="u57FA_u7840_u77E5_u8BC6"><a href="#u57FA_u7840_u77E5_u8BC6" class="headerlink" title="基础知识"></a>基础知识</h3><h4 id="u5BC4_u5B58_u5668"><a href="#u5BC4_u5B58_u5668" class="headerlink" title="寄存器"></a>寄存器</h4><p>rsp/esp —— 栈顶寄存器<br>rbp/ebp —— 栈底寄存器<br>rax/eax —— 作为函数返回值使用<br>rdi,rsi,rdx,rcx —— 作为函数参数(依次对应第1参数、第2参数…)<br><img src="/images/2017 3 12/cache1.png" width="" heigth=""><br><a id="more"></a></p>
+<h4 id="u6808_uFF1A_u4E00_u79CD_u5148_u8FDB_u5148_u51FA_u7684_u6570_u636E_u7ED3_u6784"><a href="#u6808_uFF1A_u4E00_u79CD_u5148_u8FDB_u5148_u51FA_u7684_u6570_u636E_u7ED3_u6784" class="headerlink" title="栈：一种先进先出的数据结构"></a>栈：一种先进先出的数据结构</h4><p>· 在程序中，栈是内存中的一块区域，用栈的结构来管理，从高地址向低地址增长；<br>· 其中寄存器esp代表栈顶(即最低地址)；<br>· 栈操作<br><figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">压栈:<span class="keyword">push</span> sth-&gt;[<span class="built_in">esp</span>]=sth,<span class="built_in">esp</span>=<span class="built_in">esp</span>-<span class="number">4</span></div><div class="line">出栈:<span class="keyword">pop</span> sth-&gt;sth=[<span class="built_in">esp</span>] <span class="built_in">esp</span>=<span class="built_in">esp</span>+<span class="number">4</span></div></pre></td></tr></table></figure></p>
+<p>· 栈用于保存函数调用信息和局部变量<br><img src="/images/2017 3 12/zhan.png" width="" heigth=""><br><a href="http://blog.csdn.net/u013737447/article/details/49154509" target="_blank" rel="external">这是一篇很好的讲解栈溢出原理的博客</a></p>
+<h4 id="u51FD_u6570_u8C03_u7528_3Acall_2C_ret"><a href="#u51FD_u6570_u8C03_u7528_3Acall_2C_ret" class="headerlink" title="函数调用:call, ret"></a>函数调用:call, ret</h4><p>· 调用约定：<strong>stdcal, </strong>cdecl, <strong>fastcall, </strong>nakedcall, __pascal<br>· 参数传递：取决于调用约定，默认为X86：从右向左入栈，X64：优先寄存器，参数过多时才入栈。<br>函数调用相关指令解读如下：<br><figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">call</span> func -&gt; <span class="keyword">push</span> pc<span class="comment">; jmp func.</span></div><div class="line"><span class="keyword">leave</span> -&gt; <span class="keyword">mov</span> <span class="built_in">esp</span>,<span class="built_in">ebp</span><span class="comment">; pop ebp.</span></div><div class="line"><span class="keyword">ret</span> -&gt; <span class="keyword">pop</span> pc</div></pre></td></tr></table></figure></p>
+<p><img src="/images/2017 3 12/func.png" width="" heigth=""></p>
+<h3 id="u6808_u6EA2_u51FA_u7684_u4FDD_u62A4_u673A_u5236"><a href="#u6808_u6EA2_u51FA_u7684_u4FDD_u62A4_u673A_u5236" class="headerlink" title="栈溢出的保护机制"></a>栈溢出的保护机制</h3><h3 id="u6808_u6EA2_u51FA_u7684_u5229_u7528_u65B9_u6CD5"><a href="#u6808_u6EA2_u51FA_u7684_u5229_u7528_u65B9_u6CD5" class="headerlink" title="栈溢出的利用方法"></a>栈溢出的利用方法</h3>
       
     </div>
 
@@ -358,7 +383,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/photo/" rel="tag"># photo</a>
+            <a href="/tags/tips/" rel="tag"># tips</a>
+          
+            <a href="/tags/PWN/" rel="tag"># PWN</a>
           
         </div>
       
@@ -367,8 +394,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/02/23/素数判断问题/" rel="next" title="素数判断问题">
-                <i class="fa fa-chevron-left"></i> 素数判断问题
+              <a href="/2016/11/21/百度杯CTF十月篇/" rel="next" title="百度杯CTF十月篇">
+                <i class="fa fa-chevron-left"></i> 百度杯CTF十月篇
               </a>
             
           </div>
@@ -376,10 +403,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/03/28/记进团队一事/" rel="prev" title="记进团队一事">
-                记进团队一事 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -405,8 +428,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/02/29/匹克切(新海诚)/"
-           data-title="匹克切(新海诚)" data-url="http://yoursite.com/2016/02/29/匹克切(新海诚)/">
+      <div class="ds-thread" data-thread-key="2017/03/12/关于栈溢出的总结/"
+           data-title="关于栈溢出的总结" data-url="http://yoursite.com/2017/03/12/关于栈溢出的总结/">
       </div>
     
   </div>
@@ -430,8 +453,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/author.png"
@@ -484,6 +516,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#u4E00_u4E9B_u8BF4_u660E"><span class="nav-number">1.</span> <span class="nav-text">一些说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u57FA_u7840_u77E5_u8BC6"><span class="nav-number">2.</span> <span class="nav-text">基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#u5BC4_u5B58_u5668"><span class="nav-number">2.1.</span> <span class="nav-text">寄存器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#u6808_uFF1A_u4E00_u79CD_u5148_u8FDB_u5148_u51FA_u7684_u6570_u636E_u7ED3_u6784"><span class="nav-number">2.2.</span> <span class="nav-text">栈：一种先进先出的数据结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#u51FD_u6570_u8C03_u7528_3Acall_2C_ret"><span class="nav-number">2.3.</span> <span class="nav-text">函数调用:call, ret</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u6808_u6EA2_u51FA_u7684_u4FDD_u62A4_u673A_u5236"><span class="nav-number">3.</span> <span class="nav-text">栈溢出的保护机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u6808_u6EA2_u51FA_u7684_u5229_u7528_u65B9_u6CD5"><span class="nav-number">4.</span> <span class="nav-text">栈溢出的利用方法</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
     </div>

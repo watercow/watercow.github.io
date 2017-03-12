@@ -350,7 +350,7 @@
 <p>代码中可以看出，包含script的字符串即报错，可以使用<strong>img</strong>标签绕过，XSS语句为.php?name=<strong>&lt;\img src=””onerror=”alert(‘xss’)”&gt;</strong>。<br><strong>5.</strong>另一类php过滤代码如下<br><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line"><span class="keyword">if</span>(preg_match(<span class="string">'/alert/i'</span>,$_GET[<span class="string">"name"</span>]))&#123;</div><div class="line">	<span class="keyword">die</span>(<span class="string">"error"</span>);</div><div class="line">&#125;</div><div class="line"><span class="meta">?&gt;</span></div></pre></td></tr></table></figure></p>
 <p>包含alert字符串即报错，我们可以使用编码方式绕过 .php?name=<strong><scrpit>eval(String.fromCharCode(97, 108, 101, 114, 116, 40, 39, 120, 115, 115, 39, 41))</scrpit></strong>,这样就可以弹出。<br><strong>6.</strong>再看一类php过滤代码<br><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line">&lt;script&gt;</div><div class="line">	<span class="keyword">var</span> $a = <span class="string">"&lt;?php echo $_GET["</span>name<span class="string">"]; ?&gt;"</span>;</div><div class="line">&lt;/script&gt;</div><div class="line"><span class="meta">?&gt;</span></div></pre></td></tr></table></figure></p>
 <p>从代码中可以得出直接在js环境中输出php变量，可以通过构造js脚本绕过，我们构造语句.php?name=<strong>&lt;防注释/script&gt;&lt;防注释script&gt;alert(‘xss’)&lt;防注释/script&gt;</strong>，即可弹出窗口。</p>
-<h3 id="u66F4_u9AD8_u7EA7_u4E00_u70B9_u7684XSS_u8BED_u53E5"><a href="#u66F4_u9AD8_u7EA7_u4E00_u70B9_u7684XSS_u8BED_u53E5" class="headerlink" title="更高级一点的XSS语句"></a>更高级一点的XSS语句</h3><p><strong>1.</strong>先看一部分php过滤的关键代码<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;script&gt;</div><div class="line">	<span class="keyword">var</span> $a= <span class="string">'&lt;?php echo htmlentities($_GET["name"]); ?&gt;'</span>;</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure></p>
+<h3 id="u66F4_u9AD8_u7EA7_u4E00_u70B9_u7684XSS_u8BED_u53E5"><a href="#u66F4_u9AD8_u7EA7_u4E00_u70B9_u7684XSS_u8BED_u53E5" class="headerlink" title="更高级一点的XSS语句"></a>更高级一点的XSS语句</h3><p><strong>1.</strong>先看一部分php过滤的关键代码<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;script&gt;</div><div class="line">	<span class="keyword">var</span> $a= <span class="string">'&lt;?php echo htmlentities($_GET["name"]); ?&gt;'</span>;</div><div class="line"><span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></div></pre></td></tr></table></figure></p>
 <p>这段代码在js环境中输出通过html编码的php变量，htmlentities没有过滤单引号，可以使用单引号绕过，构造语句如下<strong>.php?name=’;alert(‘xss’)’</strong>，可实现弹窗效果。</p>
 <p><strong>2.</strong>另一类，迷惑点在输入用户名的地方，当我们要测试提交一个地址的时候源码会显示出来一个链接，链接就是你输入的链接，关键代码如下：<br><img src="/images/2016 9 11/2.png" width="500px" heigth=""><br>可以看到，post地址使用了当前url,可以通过构造当前url地址达到xss的目的，构造代码如下：<strong>.php/[/url]”&gt;&lt;防注释script&gt;&lt;防注释/script&gt;”&lt;</strong>即可实现XSS。</p>
 <p><strong>3.</strong>last but 不知道是不是 least，先看代码为敬：<br><img src="/images/2016 9 11/3.png" width="500px" heigth=""><br>xss直接在页面输出锚点id，构建一个带xss的锚点即可，构造的代码如下：__.php#&lt;防注释script&gt;alert(‘xss’)&lt;防注释/script&gt;，可实现弹窗。</p>
@@ -472,7 +472,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-count">10</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -480,7 +480,7 @@
           
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">分类</span>
               
             </div>
@@ -545,7 +545,7 @@
         <div class="copyright" >
   
   &copy;  2015 - 
-  <span itemprop="copyrightYear">2016</span>
+  <span itemprop="copyrightYear">2017</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
