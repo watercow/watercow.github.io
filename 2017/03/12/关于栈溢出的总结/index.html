@@ -98,7 +98,7 @@
 <meta property="og:image" content="http://yoursite.com/images/2017 3 12/stackCanary.png">
 <meta property="og:image" content="http://yoursite.com/images/2017 3 12/ret2libc.png">
 <meta property="og:image" content="http://yoursite.com/images/2017 3 12/useROP.png">
-<meta property="og:updated_time" content="2017-03-14T03:01:21.352Z">
+<meta property="og:updated_time" content="2017-03-15T04:30:26.788Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于栈溢出的总结">
 <meta name="twitter:description" content="一些说明本次总结来自与蓝莲花战队冠成爸爸的《栈溢出-这些都是套路》
@@ -367,10 +367,11 @@
 <h4 id="u8BA9_u653B_u51FB_u8005_u96BE_u4EE5_u627E_u5230shellcode_u5730_u5740"><a href="#u8BA9_u653B_u51FB_u8005_u96BE_u4EE5_u627E_u5230shellcode_u5730_u5740" class="headerlink" title="让攻击者难以找到shellcode地址"></a>让攻击者难以找到shellcode地址</h4><p>· 地址空间布局随机化(ASLR)<br>· 绕过方法：infoleak、ret2diresolve、ROP</p>
 <h4 id="u68C0_u6D4BStack_Overflow"><a href="#u68C0_u6D4BStack_Overflow" class="headerlink" title="检测Stack Overflow"></a>检测Stack Overflow</h4><p>· Stack Canary/Cookie<br>· 绕过方法：infoleak<br><img src="/images/2017 3 12/stackCanary.png" width="" heigth=""><br><strong>标配</strong>：NX + Stack Canary + ASLR</p>
 <h3 id="u6808_u6EA2_u51FA_u7684_u5229_u7528_u65B9_u6CD5"><a href="#u6808_u6EA2_u51FA_u7684_u5229_u7528_u65B9_u6CD5" class="headerlink" title="栈溢出的利用方法"></a>栈溢出的利用方法</h3><h4 id="u73B0_u4EE3_u6808_u6EA2_u51FA_u5229_u7528_u57FA_u7840_uFF1AROP"><a href="#u73B0_u4EE3_u6808_u6EA2_u51FA_u5229_u7528_u57FA_u7840_uFF1AROP" class="headerlink" title="现代栈溢出利用基础：ROP"></a>现代栈溢出利用基础：ROP</h4><p>一种代码复用的技术，通过控制栈调用来劫持控制流(因为DEP或ASLR的开启)<br>ROP的一个简化的利用版本叫做Ret2libc<br><img src="/images/2017 3 12/ret2libc.png" width="" heigth=""><br>将返回地址覆盖为system()地址，将返回地址前的地址覆盖为/bin/sh的地址，这样就返回了一个shell，最后通过exit()函数返回。这样就没有利用任何我们注入的代码，只用程序中的代码就完成了攻击。</p>
-<h5 id="CTF_u4E2DROP_u5E38_u89C4_u5957_u8DEF"><a href="#CTF_u4E2DROP_u5E38_u89C4_u5957_u8DEF" class="headerlink" title="CTF中ROP常规套路"></a>CTF中ROP常规套路</h5><p><strong>利用方法</strong>：·第一次触发漏洞，通过ROP泄露libc的address(如puts_got)，计算system地址，然后返回到一个可以重现触发漏洞的位置(如main)，再次触发漏洞，通过ROP调用system(“/bin/sh”)<br>· 直接execve(“/bin/sh”,[“/bin/sh”],NULL)，通常在静态链接时比较常用<br><img src="/images/2017 3 12/useROP.png" width="" heigth=""><br><strong>有关Pwn</strong><br>Defcon 2015 Qualifier:R0pbaby(强烈推荐)<br>AliCTF 2016:vss(hard)<br>PlaidCTF 2013:ropasaurusrex</p>
+<h5 id="CTF_u4E2DROP_u5E38_u89C4_u5957_u8DEF"><a href="#CTF_u4E2DROP_u5E38_u89C4_u5957_u8DEF" class="headerlink" title="CTF中ROP常规套路"></a>CTF中ROP常规套路</h5><p><strong>利用方法</strong>：·第一次触发漏洞，通过ROP泄露libc的address(如puts_got)，计算system地址，然后返回到一个可以重现触发漏洞的位置(如main)，再次触发漏洞，通过ROP调用system(“/bin/sh”)<br>· 直接execve(“/bin/sh”,[“/bin/sh”],NULL)，通常在静态链接时比较常用<br><img src="/images/2017 3 12/useROP.png" width="" heigth=""><br><strong>有关Pwn</strong><br>Defcon 2015 Qualifier:<a href="https://blogdata.skullsecurity.org/r0pbaby" target="_blank" rel="external">R0pbaby</a>(强烈推荐)<br>AliCTF 2016:vss(hard)<br>PlaidCTF 2013:ropasaurusrex</p>
 <h4 id="u5229_u7528signal_u673A_u5236_u7684ROP_u6280_u672F-SROP"><a href="#u5229_u7528signal_u673A_u5236_u7684ROP_u6280_u672F-SROP" class="headerlink" title="利用signal机制的ROP技术-SROP"></a>利用signal机制的ROP技术-SROP</h4><p><strong>SROP</strong>:Sigreturn Oriented Programming<br>系统Signal Dispatch之前会将所有寄存器压入栈，然后调用signal handler,signal handler返回时会将栈的内容还原到寄存器。<br>如果事先填充栈，然后直接调用signal return，那么在返回的时候就可以控制寄存器的值。<br>虽然用的不是特别多，但是用到了就会很方便，推荐资料：<br><a href="http://angelboy.logdown.com/posts/283221-srop" target="_blank" rel="external">非常有趣的ROP技巧</a><br><a href="http://www.2cto.com/article/201512/452080.html" target="_blank" rel="external">SROP原理详解</a><br>有关Pwn<br>Defcon 2015 Qualifier fuckup(very hard;Time Eater)</p>
 <h4 id="u6CA1_u6709binary_u600E_u4E48_u529E-BROP"><a href="#u6CA1_u6709binary_u600E_u4E48_u529E-BROP" class="headerlink" title="没有binary怎么办-BROP"></a>没有binary怎么办-BROP</h4><p><strong>BROP</strong>:Blind Return Oriented Programming<br><strong>目标</strong>：在拿不到目标binary的条件下进行ROP<br><strong>条件</strong>：必须先存在一个已知的stack overflow的漏洞，而且攻击者知道如何触发这个漏洞；服务器进程在crash之后会重新复活，并且复活的进程不会被re-rand<br><strong>推荐资料</strong>：<br><a href="http://ytliu.info/blog/2014/05/31/blind-return-oriented-programming-brop-attack-yi/" target="_blank" rel="external">BROP原理详解1</a><br><a href="http://ytliu.info/blog/2014/06/01/blind-return-oriented-programming-brop-attack-er/" target="_blank" rel="external">BROP原理详解2</a><br><strong>有关Pwn</strong><br>HCTF 2016 出题人跑路了(pwn50)<br>可以重现原理详解2中的实现</p>
-<h4 id="u52AB_u6301_u6808_u6307_u9488_uFF1Astack_pivot"><a href="#u52AB_u6301_u6808_u6307_u9488_uFF1Astack_pivot" class="headerlink" title="劫持栈指针：stack pivot"></a>劫持栈指针：stack pivot</h4><h3 id="u6709_u5173_u4E0A_u9762Pwn_u7684_u5C1D_u8BD5_u89E3_u7B54"><a href="#u6709_u5173_u4E0A_u9762Pwn_u7684_u5C1D_u8BD5_u89E3_u7B54" class="headerlink" title="有关上面Pwn的尝试解答"></a>有关上面Pwn的尝试解答</h3>
+<h4 id="u52AB_u6301_u6808_u6307_u9488_uFF1Astack_pivot"><a href="#u52AB_u6301_u6808_u6307_u9488_uFF1Astack_pivot" class="headerlink" title="劫持栈指针：stack pivot"></a>劫持栈指针：stack pivot</h4><h3 id="u6709_u5173_u4E0A_u9762Pwn_u7684_u5C1D_u8BD5_u89E3_u7B54"><a href="#u6709_u5173_u4E0A_u9762Pwn_u7684_u5C1D_u8BD5_u89E3_u7B54" class="headerlink" title="有关上面Pwn的尝试解答"></a>有关上面Pwn的尝试解答</h3><p><strong>[r0pbaby详解]</strong>(<a href="https://blog.skullsecurity.org/2015/defcon-quals-r0pbaby-simple-64-bit-rop)，本来还打算把自己的过程贴出来，结果这篇博客写的太好了。" target="_blank" rel="external">https://blog.skullsecurity.org/2015/defcon-quals-r0pbaby-simple-64-bit-rop)，本来还打算把自己的过程贴出来，结果这篇博客写的太好了。</a></p>
+
       
     </div>
 
@@ -413,6 +414,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/27/方程式泄露军火库利用尝试/" rel="prev" title="方程式泄露军火库利用尝试">
+                方程式泄露军火库利用尝试 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -484,7 +489,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">10</span>
+              <span class="site-state-item-count">11</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -492,7 +497,7 @@
           
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">分类</span>
               
             </div>
@@ -501,7 +506,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
