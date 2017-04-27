@@ -94,7 +94,7 @@
 目前已知受影响的 Windows 版本包括但不限于：Windows NT，Windows 2000（没">
 <meta property="og:image" content="http://yoursite.com/images/2017 4 27/01.png">
 <meta property="og:image" content="http://yoursite.com/images/2017 4 27/02.png">
-<meta property="og:updated_time" content="2017-04-27T12:56:39.039Z">
+<meta property="og:updated_time" content="2017-04-27T12:58:42.166Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="方程式泄露军火库利用尝试">
 <meta name="twitter:description" content="前言北京时间2017年4月14日，Shadow Brokers（影子经纪人）黑客组织发布出一份震惊世界的机密文档，其中包含了多个Windows 远程漏洞利用工具，此工具集覆盖大量的Windows服务 器，可以被任何人进行下载利用，攻击者可以利用工具对Windows目标主机进行溢出提权，危害极大。
@@ -375,7 +375,7 @@
 <p>目标机: Windows 7 64bits IP:172.16.12.3</p>
 <p>目标机: Windows Server 2003 IP:172.16.12.4</p>
 </blockquote>
-<p><img src="/images/2017 4 27/01.png" width="" heigth=""></p>
+<p><img src="/images/2017 4 27/01.png" width="400" heigth=""></p>
 <h3 id="u5229_u7528Eternalblue_u4E0EDoublepulsar_u63D2_u4EF6_uFF0C_u9A8C_u8BC1445_SMB_u6F0F_u6D1E"><a href="#u5229_u7528Eternalblue_u4E0EDoublepulsar_u63D2_u4EF6_uFF0C_u9A8C_u8BC1445_SMB_u6F0F_u6D1E" class="headerlink" title="利用Eternalblue与Doublepulsar插件，验证445 SMB漏洞"></a>利用Eternalblue与Doublepulsar插件，验证445 SMB漏洞</h3><p>Eternalblue可以利用SMB漏洞获取Windows 7系统权限，Doublepulsar可以加载Metasploit生成的恶意DLL</p>
 <p>在操作机cmd中进入工具包里的Windows目录下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> (下载的工具包的路径)/Windows</div></pre></td></tr></table></figure></p>
 <p>运行fb.py进行交易(千万要注意要是<strong>python2.6</strong>，不是2.7，不然会报错)<br><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">fb</span><span class="selector-class">.py</span></div></pre></td></tr></table></figure></p>
