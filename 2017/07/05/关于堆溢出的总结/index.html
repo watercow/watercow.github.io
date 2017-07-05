@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="C语言," />
+  <meta name="keywords" content="tips,PWN," />
 
 
 
@@ -84,19 +84,21 @@
 
 
 
-<meta name="description" content="上课时出的题目是：找出从2^64-500到2^64-1中的所有素数输出，用时越短越好。鉴于我不知道最快捷的方法是什么，在此只说我的方法。
-大致思路思路就是课本大概二十页左右(懒得翻)的一个素数筛法(原名忘了)，大致内容是说一个正整数n，若对于所有的素数p&amp;lt;= 根号n，都有n无法被p整除，则n是素数。">
+<meta name="description" content="一些说明本次总结基于蓝莲花战队冠成爸爸的《堆溢出-这些都是套路》一定要看完华庭的《glibc内存管理ptmalloc源代码分析》,了解areara,bin,chunk的结构，以及Linux下的对内存管理机制之后再继续向下看。
+Use After Free &amp;amp; Double Free不能说是严格意义上的堆漏洞，但却是在堆中出现的漏洞；定义概念：Dangling pointer(悬挂指针)：">
 <meta property="og:type" content="article">
-<meta property="og:title" content="素数判断问题">
-<meta property="og:url" content="http://yoursite.com/2016/02/23/素数判断问题/index.html">
+<meta property="og:title" content="关于堆漏洞的利用技巧">
+<meta property="og:url" content="http://yoursite.com/2017/07/05/关于堆溢出的总结/index.html">
 <meta property="og:site_name" content="Watercow's Blog!">
-<meta property="og:description" content="上课时出的题目是：找出从2^64-500到2^64-1中的所有素数输出，用时越短越好。鉴于我不知道最快捷的方法是什么，在此只说我的方法。
-大致思路思路就是课本大概二十页左右(懒得翻)的一个素数筛法(原名忘了)，大致内容是说一个正整数n，若对于所有的素数p&amp;lt;= 根号n，都有n无法被p整除，则n是素数。">
-<meta property="og:updated_time" content="2016-03-04T15:12:04.467Z">
+<meta property="og:description" content="一些说明本次总结基于蓝莲花战队冠成爸爸的《堆溢出-这些都是套路》一定要看完华庭的《glibc内存管理ptmalloc源代码分析》,了解areara,bin,chunk的结构，以及Linux下的对内存管理机制之后再继续向下看。
+Use After Free &amp;amp; Double Free不能说是严格意义上的堆漏洞，但却是在堆中出现的漏洞；定义概念：Dangling pointer(悬挂指针)：">
+<meta property="og:image" content="http://yoursite.com/images/2017 7 4/1.png">
+<meta property="og:updated_time" content="2017-07-05T07:07:06.282Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="素数判断问题">
-<meta name="twitter:description" content="上课时出的题目是：找出从2^64-500到2^64-1中的所有素数输出，用时越短越好。鉴于我不知道最快捷的方法是什么，在此只说我的方法。
-大致思路思路就是课本大概二十页左右(懒得翻)的一个素数筛法(原名忘了)，大致内容是说一个正整数n，若对于所有的素数p&amp;lt;= 根号n，都有n无法被p整除，则n是素数。">
+<meta name="twitter:title" content="关于堆漏洞的利用技巧">
+<meta name="twitter:description" content="一些说明本次总结基于蓝莲花战队冠成爸爸的《堆溢出-这些都是套路》一定要看完华庭的《glibc内存管理ptmalloc源代码分析》,了解areara,bin,chunk的结构，以及Linux下的对内存管理机制之后再继续向下看。
+Use After Free &amp;amp; Double Free不能说是严格意义上的堆漏洞，但却是在堆中出现的漏洞；定义概念：Dangling pointer(悬挂指针)：">
+<meta name="twitter:image" content="http://yoursite.com/images/2017 7 4/1.png">
 
 
 
@@ -124,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/02/23/素数判断问题/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/07/05/关于堆溢出的总结/"/>
 
 
 
 
 
-  <title> 素数判断问题 | Watercow's Blog! </title>
+  <title> 关于堆漏洞的利用技巧 | Watercow's Blog! </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -241,7 +243,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/02/23/素数判断问题/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/05/关于堆溢出的总结/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="watercow">
@@ -265,7 +267,7 @@
             
             
               
-                素数判断问题
+                关于堆漏洞的利用技巧
               
             
           </h1>
@@ -278,8 +280,8 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-02-23T13:05:03+08:00">
-                2016-02-23
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-05T10:52:53+08:00">
+                2017-07-05
               </time>
             
 
@@ -297,8 +299,19 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C语言/" itemprop="url" rel="index">
-                    <span itemprop="name">C语言</span>
+                  <a href="/categories/CTF/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/PWN/" itemprop="url" rel="index">
+                    <span itemprop="name">PWN</span>
                   </a>
                 </span>
 
@@ -312,8 +325,8 @@
             
               <span class="post-comments-count">
                 <span class="post-meta-divider">|</span>
-                <a href="/2016/02/23/素数判断问题/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/02/23/素数判断问题/" itemprop="commentCount"></span>
+                <a href="/2017/07/05/关于堆溢出的总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/07/05/关于堆溢出的总结/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -339,11 +352,11 @@
       
 
       
-        <p>上课时出的题目是：找出从<strong>2^64-500</strong>到<strong>2^64-1</strong>中的所有素数输出，用时越短越好。鉴于我不知道最快捷的方法是什么，在此只说我的方法。</p>
-<h3 id="u5927_u81F4_u601D_u8DEF"><a href="#u5927_u81F4_u601D_u8DEF" class="headerlink" title="大致思路"></a>大致思路</h3><p>思路就是课本大概二十页左右(懒得翻)的一个<strong>素数筛法</strong>(原名忘了)，大致内容是说一个<strong>正整数n</strong>，若对于所有的素数<strong>p</strong>&lt;= 根号n，都有n无法被p整除，则n是素数。<br><a id="more"></a></p>
-<h3 id="u4EE3_u7801"><a href="#u4EE3_u7801" class="headerlink" title="代码"></a>代码</h3><p>直接亮代码<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;math.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;time.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">isPrime</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span> n)</span></span>&#123;</div><div class="line">	<span class="keyword">double</span> a= n;<span class="comment">//数值相等，使函数sqrt正常使用</span></div><div class="line">	<span class="keyword">int</span> i;</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span> j=<span class="number">7</span>,k;</div><div class="line">	<span class="keyword">int</span> primeList[<span class="number">8</span>]=&#123;<span class="number">4</span>,<span class="number">2</span>,<span class="number">4</span>,<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">2</span>,<span class="number">6</span>&#125;;</div><div class="line">	<span class="keyword">if</span>(n==<span class="number">1</span>)</div><div class="line">		<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">	<span class="keyword">if</span>(n==<span class="number">2</span>||n==<span class="number">3</span>||n==<span class="number">5</span>)</div><div class="line">		<span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">	<span class="keyword">if</span>((n)%<span class="number">2</span>==<span class="number">0</span>||(n)%<span class="number">3</span>==<span class="number">0</span>||(n)%<span class="number">5</span>==<span class="number">0</span>)</div><div class="line">		<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">	k=(<span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span>)<span class="built_in">sqrt</span>(a);</div><div class="line">	<span class="keyword">for</span>(;j&lt;=k;)&#123;</div><div class="line">		<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">8</span>;i++)&#123;</div><div class="line">			<span class="keyword">if</span>(n%j==<span class="number">0</span>)</div><div class="line">				<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">			j+=primeList[i];</div><div class="line">		&#125;</div><div class="line"><span class="comment">//		if(n%j==0)</span></div><div class="line"><span class="comment">//			return 0;</span></div><div class="line">	&#125;<span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</div><div class="line">	<span class="keyword">clock_t</span> start, finish;</div><div class="line">   	<span class="keyword">double</span>  duration;</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span> n=<span class="number">18446744073709551116u</span>ll,a=<span class="number">18446744073709551615u</span>ll;</div><div class="line">	start = clock();</div><div class="line">	<span class="keyword">for</span>(;n&lt;a;n++)&#123;<span class="comment">//此时只能是小于 ，小于等于就出错</span></div><div class="line">		<span class="keyword">if</span>(isPrime(n))</div><div class="line">			<span class="built_in">printf</span>(<span class="string">"%llu是素数\n"</span>,n);</div><div class="line">	&#125;</div><div class="line">	finish=clock();</div><div class="line">	duration = (<span class="keyword">double</span>)(finish - start) / CLOCKS_PER_SEC;</div><div class="line">   	<span class="built_in">printf</span>( <span class="string">"%f 秒\n"</span>, duration );</div><div class="line">	system(<span class="string">"pause"</span>);</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>PS:在vs2012上运行无误，其他编译器报错可能是因为引入了<stdlib.h>的原因。</stdlib.h></p>
-
+        <h3 id="u4E00_u4E9B_u8BF4_u660E"><a href="#u4E00_u4E9B_u8BF4_u660E" class="headerlink" title="一些说明"></a>一些说明</h3><p>本次总结基于蓝莲花战队冠成爸爸的《堆溢出-这些都是套路》<br>一定要看完华庭的<a href="https://wenku.baidu.com/view/20033e124431b90d6c85c718.html" target="_blank" rel="external">《glibc内存管理ptmalloc源代码分析》</a>,<br>了解areara,bin,chunk的结构，以及Linux下的对内存管理机制之后再继续向下看。</p>
+<h3 id="Use_After_Free__26amp_3B_Double_Free"><a href="#Use_After_Free__26amp_3B_Double_Free" class="headerlink" title="Use After Free &amp; Double Free"></a>Use After Free &amp; Double Free</h3><p>不能说是严格意义上的堆漏洞，但却是在堆中出现的漏洞；定义概念：<br><strong>Dangling pointer(悬挂指针)：</strong> 指向被释放的内存的指针，通常是由于释放内存后未将指针置Null<br><strong>Use After Free：</strong> 对Dangling pointer所指向内存进行use。如指针解引用等等。<br>Use After Free漏洞根据use的方式会产生不同的危害<br><strong>UAF的利用思路:</strong><br>想办法将Dangling pointer指向的内存重新分配回来，且尽可能的使该内存中的内容可控(如重新分配为字符串)。如果use的方式是打印<em>(Dangling pointer + 8)，那就会产生任意地址都，如果use方式是将</em>(Dangling pointer + 12)作为函数指针进行调用，那就可以劫持控制流。<br>举个栗子：<br><img src="/images/2017 7 4/1.png" width="" heigth=""></p>
+<p><strong>Double Free：</strong> UAF中的use为再次free，是一种特殊的UAF，并且可以转换为普通的UAF<br>转换为：free(p),p2=malloc(),p2与p指向同一个内存,此时再free(p)，p2为Dangling pointer==&gt;UAF</p>
+<h3 id="Heap_Overflow"><a href="#Heap_Overflow" class="headerlink" title="Heap Overflow"></a>Heap Overflow</h3><h4 id="Overflow_directly"><a href="#Overflow_directly" class="headerlink" title="Overflow directly"></a>Overflow directly</h4><h4 id="Fast_bin_attack"><a href="#Fast_bin_attack" class="headerlink" title="Fast bin attack"></a>Fast bin attack</h4><h4 id="Unsorted_bin_attack"><a href="#Unsorted_bin_attack" class="headerlink" title="Unsorted bin attack"></a>Unsorted bin attack</h4><h4 id="Overwrite_Topchunk"><a href="#Overwrite_Topchunk" class="headerlink" title="Overwrite Topchunk"></a>Overwrite Topchunk</h4><h4 id="Classical__26amp_3B_Modem_Unlink_Attack"><a href="#Classical__26amp_3B_Modem_Unlink_Attack" class="headerlink" title="Classical &amp; Modem Unlink Attack"></a>Classical &amp; Modem Unlink Attack</h4><h4 id="Off_by_one__26amp_3B_Off_by_null"><a href="#Off_by_one__26amp_3B_Off_by_null" class="headerlink" title="Off by one &amp; Off by null"></a>Off by one &amp; Off by null</h4><h4 id="Other_techniques"><a href="#Other_techniques" class="headerlink" title="Other techniques"></a>Other techniques</h4><h3 id="General_exploit_techniques"><a href="#General_exploit_techniques" class="headerlink" title="General exploit techniques"></a>General exploit techniques</h3><h4 id="Heap_fengshui"><a href="#Heap_fengshui" class="headerlink" title="Heap fengshui"></a>Heap fengshui</h4><h4 id="Heap_spray"><a href="#Heap_spray" class="headerlink" title="Heap spray"></a>Heap spray</h4><h4 id="Exploit_mmap_chunk"><a href="#Exploit_mmap_chunk" class="headerlink" title="Exploit mmap chunk"></a>Exploit mmap chunk</h4><h3 id="u6709_u5173_u9898_u76EE"><a href="#u6709_u5173_u9898_u76EE" class="headerlink" title="有关题目"></a>有关题目</h3><h4 id="UAF__26amp_3B_DF"><a href="#UAF__26amp_3B_DF" class="headerlink" title="UAF &amp; DF"></a>UAF &amp; DF</h4><p><strong>练习：</strong><br>· UAF: DEFCON CTF Qualifier 2014:<a href="https://github.com/ctfs" target="_blank" rel="external">shitsco</a>;BCTF 2016:router;HCTF2016 5-days(hard)<br>· Double Free：0CTF2016:freenote;HCTF2016 fheap;HCTF2016 5-days(hard)<br><strong>参考理解的博客</strong><br>· <a href="https://blog.skullsecurity.org/2014/defcon-quals-writeup-for-shitsco-use-after-free-vuln" target="_blank" rel="external">https://blog.skullsecurity.org/2014/defcon-quals-writeup-for-shitsco-use-after-free-vuln</a><br>· <a href="http://www.tuicool.com/articles/yquU732" target="_blank" rel="external">http://www.tuicool.com/articles/yquU732</a><br>· <a href="ttp://blog.csdn.net/sdulibh/article/details/47375969" target="_blank" rel="external">http://blog.csdn.net/sdulibh/article/details/47375969</a></p>
+<h4 id="Heap_Overflow-1"><a href="#Heap_Overflow-1" class="headerlink" title="Heap Overflow"></a>Heap Overflow</h4><h4 id="General_exploit_techniques-1"><a href="#General_exploit_techniques-1" class="headerlink" title="General exploit techniques"></a>General exploit techniques</h4>
       
     </div>
 
@@ -366,7 +379,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/C语言/" rel="tag"># C语言</a>
+            <a href="/tags/tips/" rel="tag"># tips</a>
+          
+            <a href="/tags/PWN/" rel="tag"># PWN</a>
           
         </div>
       
@@ -375,8 +390,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/02/07/hexo如何更新博客/" rel="next" title="hexo如何更新博客">
-                <i class="fa fa-chevron-left"></i> hexo如何更新博客
+              <a href="/2017/05/03/CSGO还原1-6一键购买/" rel="next" title="CSGO还原1.6一键购买">
+                <i class="fa fa-chevron-left"></i> CSGO还原1.6一键购买
               </a>
             
           </div>
@@ -384,10 +399,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/02/29/匹克切(新海诚)/" rel="prev" title="匹克切(新海诚)">
-                匹克切(新海诚) <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -413,8 +424,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/02/23/素数判断问题/"
-           data-title="素数判断问题" data-url="http://yoursite.com/2016/02/23/素数判断问题/">
+      <div class="ds-thread" data-thread-key="2017/07/05/关于堆溢出的总结/"
+           data-title="关于堆漏洞的利用技巧" data-url="http://yoursite.com/2017/07/05/关于堆溢出的总结/">
       </div>
     
   </div>
@@ -511,7 +522,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#u5927_u81F4_u601D_u8DEF"><span class="nav-number">1.</span> <span class="nav-text">大致思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u4EE3_u7801"><span class="nav-number">2.</span> <span class="nav-text">代码</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#u4E00_u4E9B_u8BF4_u660E"><span class="nav-number">1.</span> <span class="nav-text">一些说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Use_After_Free__26amp_3B_Double_Free"><span class="nav-number">2.</span> <span class="nav-text">Use After Free & Double Free</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Heap_Overflow"><span class="nav-number">3.</span> <span class="nav-text">Heap Overflow</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Overflow_directly"><span class="nav-number">3.1.</span> <span class="nav-text">Overflow directly</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Fast_bin_attack"><span class="nav-number">3.2.</span> <span class="nav-text">Fast bin attack</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Unsorted_bin_attack"><span class="nav-number">3.3.</span> <span class="nav-text">Unsorted bin attack</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Overwrite_Topchunk"><span class="nav-number">3.4.</span> <span class="nav-text">Overwrite Topchunk</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Classical__26amp_3B_Modem_Unlink_Attack"><span class="nav-number">3.5.</span> <span class="nav-text">Classical & Modem Unlink Attack</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Off_by_one__26amp_3B_Off_by_null"><span class="nav-number">3.6.</span> <span class="nav-text">Off by one & Off by null</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Other_techniques"><span class="nav-number">3.7.</span> <span class="nav-text">Other techniques</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#General_exploit_techniques"><span class="nav-number">4.</span> <span class="nav-text">General exploit techniques</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Heap_fengshui"><span class="nav-number">4.1.</span> <span class="nav-text">Heap fengshui</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Heap_spray"><span class="nav-number">4.2.</span> <span class="nav-text">Heap spray</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Exploit_mmap_chunk"><span class="nav-number">4.3.</span> <span class="nav-text">Exploit mmap chunk</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u6709_u5173_u9898_u76EE"><span class="nav-number">5.</span> <span class="nav-text">有关题目</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#UAF__26amp_3B_DF"><span class="nav-number">5.1.</span> <span class="nav-text">UAF & DF</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Heap_Overflow-1"><span class="nav-number">5.2.</span> <span class="nav-text">Heap Overflow</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#General_exploit_techniques-1"><span class="nav-number">5.3.</span> <span class="nav-text">General exploit techniques</span></a></li></ol></li></ol></div>
             
 
           </div>

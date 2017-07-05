@@ -239,6 +239,162 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/05/关于堆溢出的总结/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="watercow">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/author.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Watercow's Blog!">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Watercow's Blog!" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/07/05/关于堆溢出的总结/" itemprop="url">
+                  关于堆漏洞的利用技巧
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-05T10:52:53+08:00">
+                2017-07-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/PWN/" itemprop="url" rel="index">
+                    <span itemprop="name">PWN</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2017/07/05/关于堆溢出的总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/07/05/关于堆溢出的总结/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="u4E00_u4E9B_u8BF4_u660E"><a href="#u4E00_u4E9B_u8BF4_u660E" class="headerlink" title="一些说明"></a>一些说明</h3><p>本次总结基于蓝莲花战队冠成爸爸的《堆溢出-这些都是套路》<br>一定要看完华庭的<a href="https://wenku.baidu.com/view/20033e124431b90d6c85c718.html" target="_blank" rel="external">《glibc内存管理ptmalloc源代码分析》</a>,<br>了解areara,bin,chunk的结构，以及Linux下的对内存管理机制之后再继续向下看。</p>
+<h3 id="Use_After_Free__26amp_3B_Double_Free"><a href="#Use_After_Free__26amp_3B_Double_Free" class="headerlink" title="Use After Free &amp; Double Free"></a>Use After Free &amp; Double Free</h3><p>不能说是严格意义上的堆漏洞，但却是在堆中出现的漏洞；定义概念：<br><strong>Dangling pointer(悬挂指针)：</strong> 指向被释放的内存的指针，通常是由于释放内存后未将指针置Null<br><strong>Use After Free：</strong> 对Dangling pointer所指向内存进行use。如指针解引用等等。<br>Use After Free漏洞根据use的方式会产生不同的危害<br><strong>UAF的利用思路:</strong><br>想办法将Dangling pointer指向的内存重新分配回来，且尽可能的使该内存中的内容可控(如重新分配为字符串)。如果use的方式是打印<em>(Dangling pointer + 8)，那就会产生任意地址都，如果use方式是将</em>(Dangling pointer + 12)作为函数指针进行调用，那就可以劫持控制流。<br>举个栗子：<br><img src="/images/2017 7 4/1.png" width="" heigth=""></p>
+<p><strong>Double Free：</strong> UAF中的use为再次free，是一种特殊的UAF，并且可以转换为普通的UAF<br>转换为：free(p),p2=malloc(),p2与p指向同一个内存,此时再free(p)，p2为Dangling pointer==&gt;UAF</p>
+<h3 id="Heap_Overflow"><a href="#Heap_Overflow" class="headerlink" title="Heap Overflow"></a>Heap Overflow</h3><h4 id="Overflow_directly"><a href="#Overflow_directly" class="headerlink" title="Overflow directly"></a>Overflow directly</h4><h4 id="Fast_bin_attack"><a href="#Fast_bin_attack" class="headerlink" title="Fast bin attack"></a>Fast bin attack</h4><h4 id="Unsorted_bin_attack"><a href="#Unsorted_bin_attack" class="headerlink" title="Unsorted bin attack"></a>Unsorted bin attack</h4><h4 id="Overwrite_Topchunk"><a href="#Overwrite_Topchunk" class="headerlink" title="Overwrite Topchunk"></a>Overwrite Topchunk</h4><h4 id="Classical__26amp_3B_Modem_Unlink_Attack"><a href="#Classical__26amp_3B_Modem_Unlink_Attack" class="headerlink" title="Classical &amp; Modem Unlink Attack"></a>Classical &amp; Modem Unlink Attack</h4><h4 id="Off_by_one__26amp_3B_Off_by_null"><a href="#Off_by_one__26amp_3B_Off_by_null" class="headerlink" title="Off by one &amp; Off by null"></a>Off by one &amp; Off by null</h4><h4 id="Other_techniques"><a href="#Other_techniques" class="headerlink" title="Other techniques"></a>Other techniques</h4><h3 id="General_exploit_techniques"><a href="#General_exploit_techniques" class="headerlink" title="General exploit techniques"></a>General exploit techniques</h3><h4 id="Heap_fengshui"><a href="#Heap_fengshui" class="headerlink" title="Heap fengshui"></a>Heap fengshui</h4><h4 id="Heap_spray"><a href="#Heap_spray" class="headerlink" title="Heap spray"></a>Heap spray</h4><h4 id="Exploit_mmap_chunk"><a href="#Exploit_mmap_chunk" class="headerlink" title="Exploit mmap chunk"></a>Exploit mmap chunk</h4><h3 id="u6709_u5173_u9898_u76EE"><a href="#u6709_u5173_u9898_u76EE" class="headerlink" title="有关题目"></a>有关题目</h3><h4 id="UAF__26amp_3B_DF"><a href="#UAF__26amp_3B_DF" class="headerlink" title="UAF &amp; DF"></a>UAF &amp; DF</h4><p><strong>练习：</strong><br>· UAF: DEFCON CTF Qualifier 2014:<a href="https://github.com/ctfs" target="_blank" rel="external">shitsco</a>;BCTF 2016:router;HCTF2016 5-days(hard)<br>· Double Free：0CTF2016:freenote;HCTF2016 fheap;HCTF2016 5-days(hard)<br><strong>参考理解的博客</strong><br>· <a href="https://blog.skullsecurity.org/2014/defcon-quals-writeup-for-shitsco-use-after-free-vuln" target="_blank" rel="external">https://blog.skullsecurity.org/2014/defcon-quals-writeup-for-shitsco-use-after-free-vuln</a><br>· <a href="http://www.tuicool.com/articles/yquU732" target="_blank" rel="external">http://www.tuicool.com/articles/yquU732</a><br>· <a href="ttp://blog.csdn.net/sdulibh/article/details/47375969" target="_blank" rel="external">http://blog.csdn.net/sdulibh/article/details/47375969</a></p>
+<h4 id="Heap_Overflow-1"><a href="#Heap_Overflow-1" class="headerlink" title="Heap Overflow"></a>Heap Overflow</h4><h4 id="General_exploit_techniques-1"><a href="#General_exploit_techniques-1" class="headerlink" title="General exploit techniques"></a>General exploit techniques</h4>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
   <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/03/CSGO还原1-6一键购买/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -854,150 +1010,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/13/SQL注入总结-垃圾总结，大神勿喷/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="watercow">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/images/author.png">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="Watercow's Blog!">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="Watercow's Blog!" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/09/13/SQL注入总结-垃圾总结，大神勿喷/" itemprop="url">
-                  SQL注入总结(垃圾总结，大神勿喷)
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-13T19:08:05+08:00">
-                2016-09-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CTF/" itemprop="url" rel="index">
-                    <span itemprop="name">CTF</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <a href="/2016/09/13/SQL注入总结-垃圾总结，大神勿喷/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/13/SQL注入总结-垃圾总结，大神勿喷/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="u539F_u7406_u6027_u7684_u8FD8_u662F_u8BF4_u4E0B_u597D"><a href="#u539F_u7406_u6027_u7684_u8FD8_u662F_u8BF4_u4E0B_u597D" class="headerlink" title="原理性的还是说下好"></a>原理性的还是说下好</h3><p>所谓SQL注入，就是通过把SQL命令插入到web表单提交或输入域名或页面请求的查询字符串，最终达到欺骗服务器执行恶意的SQL命令。</p>
-<h3 id="u624B_u5DE5_u6CE8_u5165"><a href="#u624B_u5DE5_u6CE8_u5165" class="headerlink" title="手工注入"></a>手工注入</h3><h4 id="u6CE8_u5165access_u6570_u636E_u5E93"><a href="#u6CE8_u5165access_u6570_u636E_u5E93" class="headerlink" title="注入access数据库"></a>注入access数据库</h4><p>首先，在以<strong>[.asp?id=32(数字可任意)]</strong>结尾的链接依次添加语句<strong>[‘ ]</strong>、<strong>[and 1=1]</strong>和<strong>[and 1=2]</strong>，来判断网站是否存在注入点。<br>然后，添加语句<strong>[and exist(select * from admin)]</strong>，根据页面返回结果来猜解表名。<br>再次，添加语句<strong>[and exists(select admin from admin)]</strong>,来猜解admin表中的列名admin。<br>最后，添加语句<strong>[and(select top 1 len(admin) from admin)&gt;1]</strong>，来猜解字段长度；添加<strong>[and(select top 1 asc(mid(admin,1,1))from admin)&gt;97]</strong>，来猜解字段中字符的ASCLL码。<br>通过以上四个步骤，反复猜解，即可得到数据库存储的用户名和密码。</p>
-<h4 id="u624B_u5DE5_u8054_u5408_u67E5_u8BE2_u6CE8_u5165_u6280_u672F"><a href="#u624B_u5DE5_u8054_u5408_u67E5_u8BE2_u6CE8_u5165_u6280_u672F" class="headerlink" title="手工联合查询注入技术"></a>手工联合查询注入技术</h4><p>首先，在链接后面添加语句<strong>[order by 11(数字任意)]</strong>，根据页面返回结果，来判断站点中的字段数目。<br>然后，在链接后面添加语句<strong>[union select 1,2,3,4,5,6,7,8,9,10,11 from admin(表名)]</strong>，进行联合查询，来暴露可查询的字段编号。<br>最后，根据上一步得到字段编号，添加语句<strong>[union select 1,admin,password,4,5,6,7,8,9,10,11 from admin]</strong>直接暴露管理员用户名和密码。</p>
-<h4 id="Domain_u5DE5_u5177_u6CE8_u5165"><a href="#Domain_u5DE5_u5177_u6CE8_u5165" class="headerlink" title="Domain工具注入"></a>Domain工具注入</h4>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1043,7 +1055,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">12</span>
+              <span class="site-state-item-count">13</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
